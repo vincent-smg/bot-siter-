@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Commands — Anko Uguisu{% endblock %}
+
+{% block content %}
+
+<header class="page-head">
+  <span class="page-head__eyebrow">Prefix: {{ prefix }}</span>
+  <div class="container">
+    <h1>Commands</h1>
+    <p>Every prefix command Anko understands, grouped by category. Click any card to copy its usage to your clipboard.</p>
+    <div class="hero__actions" style="justify-content: center; margin-top: 24px;">
+      <a class="btn btn--gold" href="{{ url_for('premium_page') }}">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 16L3 5l5.5 4L12 3l3.5 6L21 5l-2 11H5zm0 2h14v2H5v-2z"/></svg>
+        Unlock premium commands
+      </a>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+
+    <div class="command-tabs" role="tablist" aria-label="Filter commands by category">
+      <button type="button" class="is-active" data-filter="all">All</button>
+      {% for category in categories %}
+        <button type="button" data-filter="{{ category.id }}">{{ category.label }}</button>
+      {% endfor %}
+    </div>
+
+    {% for category in categories %}
+      <div class="command-category" data-category="{{ category.id }}">
+        <h2>{{ category.label }}</h2>
+        <div class="command-grid">
+          {% for command in category.commands %}
+            <button type="button" class="command-card" data-copy="{{ command.usage }}">
+              {% if command.premium %}<span class="premium-badge">Premium</span>{% endif %}
+              <span class="name">{{ command.usage }}</span>
+              <span class="desc">{{ command.description }}</span>
+              <span class="copy-hint">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span class="label"></span>
+              </span>
+            </button>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    // Click-to-copy
+    document.querySelectorAll(".command-card").forEach(function (card) {
+      card.addEventListener("click", function () {
+        const text = card.getAttribute("data-copy");
+        navigator.clipboard.writeText(text).then(function () {
+          card.classList.add("is-copied");
+          setTimeout(function () {
+            card.classList.remove("is-copied");
+          }, 1500);
+        }).catch(function () {
+          // Clipboard API unavailable - fall back silently
+        });
+      });
+    });
+
+    // Category tab filter
+    const tabs = document.querySelectorAll(".command-tabs button");
+    const categories = document.querySelectorAll(".command-category");
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        tabs.forEach(function (t) { t.classList.remove("is-active"); });
+        tab.classList.add("is-active");
+
+        const filter = tab.getAttribute("data-filter");
+        categories.forEach(function (cat) {
+          const show = filter === "all" || cat.getAttribute("data-category") === filter;
+          cat.style.display = show ? "" : "none";
+        });
+      });
+    });
+  })();
+</script>
+{% endblock %}

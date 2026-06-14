@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Updates — Anko Uguisu{% endblock %}
+
+{% block content %}
+
+<header class="page-head">
+  <span class="page-head__eyebrow">Changelog</span>
+  <div class="container">
+    <h1>Updates</h1>
+    <p>What's new with Anko, newest first.</p>
+  </div>
+</header>
+
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="update-list">
+      {% for update in updates %}
+        <article class="update-card">
+          <div class="date">{{ update.date }}</div>
+          <div>
+            <span class="tag tag--{{ update.tag|lower }}">{{ update.tag }}</span>
+            <h3>{{ update.title }}</h3>
+            <p>{{ update.summary }}</p>
+          </div>
+        </article>
+      {% else %}
+        <p style="text-align: center; color: var(--text-muted);">No updates yet — check back soon.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}

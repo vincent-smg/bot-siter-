@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Status — Anko Uguisu{% endblock %}
+
+{% block content %}
+
+<header class="page-head">
+  <span class="page-head__eyebrow">Live</span>
+  <div class="container">
+    <h1>Bot Status</h1>
+    <p>A live look at Anko's connection to Discord. This refreshes automatically every 15 seconds.</p>
+  </div>
+</header>
+
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+
+    <div class="status-banner {{ 'is-online' if status.online else 'is-offline' }}" id="status-banner">
+      <span class="led"></span>
+      <span id="status-text">{{ "Anko is online and connected" if status.online else "Anko is currently offline" }}</span>
+    </div>
+
+    <div class="status-grid">
+      <div class="status-card">
+        <div class="value" id="stat-latency">{{ status.latency_ms ~ " ms" if status.latency_ms is not none else "—" }}</div>
+        <div class="label">Gateway Latency</div>
+      </div>
+      <div class="status-card">
+        <div class="value" id="stat-guilds">{{ status.guild_count }}</div>
+        <div class="label">Servers</div>
+      </div>
+      <div class="status-card">
+        <div class="value" id="stat-users">{{ status.user_count }}</div>
+        <div class="label">Members Reached</div>
+      </div>
+      <div class="status-card">
+        <div class="value" id="stat-shards">{{ status.shard_count }}</div>
+        <div class="label">Shards</div>
+      </div>
+    </div>
+
+    <p class="status-note" id="status-note">
+      {% if status.last_updated %}
+        Last reported by the bot at {{ status.last_updated }} UTC.
+      {% else %}
+        Waiting for the bot to report its first status update.
+      {% endif %}
+    </p>
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const banner = document.getElementById("status-banner");
+    const statusText = document.getElementById("status-text");
+    const note = document.getElementById("status-note");
+    const latencyEl = document.getElementById("stat-latency");
+    const guildsEl = document.getElementById("stat-guilds");
+    const usersEl = document.getElementById("stat-users");
+    const shardsEl = document.getElementById("stat-shards");
+
+    function refresh() {
+      fetch("/api/status")
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.online) {
+            banner.classList.add("is-online");
+            banner.classList.remove("is-offline");
+            statusText.textContent = "Anko is online and connected";
+          } else {
+            banner.classList.add("is-offline");
+            banner.classList.remove("is-online");
+            statusText.textContent = "Anko is currently offline";
+          }
+
+          latencyEl.textContent = (data.latency_ms !== null && data.latency_ms !== undefined)
+            ? data.latency_ms + " ms"
+            : "—";
+          guildsEl.textContent = data.guild_count ?? 0;
+          usersEl.textContent = data.user_count ?? 0;
+          shardsEl.textContent = data.shard_count ?? 1;
+
+          if (data.last_updated) {
+            note.textContent = "Last reported by the bot at " + data.last_updated + " UTC.";
+          }
+        })
+        .catch(function () {
+          // Network hiccup - keep showing the last known values
+        });
+    }
+
+    setInterval(refresh, 15000);
+  })();
+</script>
+{% endblock %}
