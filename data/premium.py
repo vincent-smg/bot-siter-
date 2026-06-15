@@ -39,8 +39,8 @@ PREMIUM_PERKS = [
 
 PREMIUM_TIERS = [
     {
-        "id": "supporter",
-        "name": "Supporter",
+        "id": "premium",
+        "name": "Premium",
         "price": "$0.99",
         "period": "/ month",
         "tagline": "A small boost to say thanks.",
@@ -55,14 +55,14 @@ PREMIUM_TIERS = [
         ],
     },
     {
-        "id": "patron",
-        "name": "Patron",
+        "id": "premium_plus",
+        "name": "Premium+",
         "price": "$2.99",
         "period": "/ month",
         "tagline": "The full Anko experience.",
         "featured": True,
         "features": [
-            "Everything in Supporter",
+            "Everything in Premium",
             "custom rank background(/setbg)",
             "custom rank color customization(/changecolor)",
             "XP & coin boost while chatting",
