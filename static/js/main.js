@@ -8,6 +8,13 @@
     const isOpen = nav.classList.toggle("is-open");
     toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
   });
+
+  nav.querySelectorAll(".nav__menu a").forEach(function (link) {
+    link.addEventListener("click", function () {
+      nav.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+    });
+  });
 })();
 
 // Auto-dismiss flash messages
