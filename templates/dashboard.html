@@ -4,18 +4,41 @@
 
 {% block content %}
 
-<header class="page-head">
-  <span class="page-head__eyebrow">Dashboard</span>
-  <div class="container">
-    <h1>Your Servers</h1>
-    <p>Pick a server below to manage Anko's settings. Only servers where you have Manage Server or Administrator permissions, and where Anko is present, are shown here.</p>
+<header class="dash-hero">
+  <div class="dash-hero__glow"></div>
+  <div class="container dash-hero__inner">
+    <div class="dash-hero__text">
+      <span class="page-head__eyebrow">Control Panel</span>
+      <h1>Your <span class="accent">Dashboard</span></h1>
+      <p>Pick a server to manage Anko's settings. Only servers where Anko is present and you have Manage Server or Administrator permissions are shown.</p>
+    </div>
+
+    {% if current_user %}
+    <div class="dash-user-card">
+      <img class="dash-user-card__avatar" src="{{ current_user.avatar_url() }}" alt="">
+      <div class="dash-user-card__info">
+        <div class="dash-user-card__name">{{ current_user.display_name() }}</div>
+        <div class="dash-user-card__sub">@{{ current_user.username }}</div>
+      </div>
+      {% if guilds %}
+      <div class="dash-user-card__stat">
+        <span class="dash-user-card__stat-num">{{ guilds | length }}</span>
+        <span class="dash-user-card__stat-label">server{{ 's' if guilds | length != 1 }}</span>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
   </div>
 </header>
 
-<section class="section" style="padding-top: 0;">
+<section class="section" style="padding-top: 32px;">
   <div class="container">
 
     {% if guilds %}
+      <div class="dash-section-label">
+        <span>Managed Servers</span>
+        <span class="dash-section-count">{{ guilds | length }}</span>
+      </div>
       <div class="dashboard-grid">
         {% for guild in guilds %}
           {% set icon = guild | guild_icon_url %}
@@ -31,14 +54,24 @@
                 {{ "Administrator" if guild.permission_level == "administrator" else "Manage Server" }}
               </span>
             </div>
+            <svg class="dashboard-server-card__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
           </a>
         {% endfor %}
       </div>
+
     {% else %}
       <div class="dashboard-empty">
-        <p>We couldn't find any servers where you have Manage Server permissions and Anko is present.</p>
-        <div class="hero__actions" style="justify-content: center; margin-top: 24px;">
-          <a class="btn btn--gold" href="{{ invite_url }}" target="_blank" rel="noopener">Invite Anko to a server</a>
+        <div class="dashboard-empty__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <h2>No servers found</h2>
+        <p>We couldn't find any servers where you have Manage Server permissions and Anko is present. Invite Anko to your server first, then come back here.</p>
+        <div class="hero__actions" style="justify-content: center; margin-top: 28px;">
+          <a class="btn btn--gold btn--lg" href="{{ invite_url }}" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.461-.63.873-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.001-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+            Invite Anko to a server
+          </a>
+          <a class="btn btn--outline btn--lg" href="{{ url_for('index') }}">Back to home</a>
         </div>
       </div>
     {% endif %}
