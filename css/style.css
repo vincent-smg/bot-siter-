@@ -175,27 +175,13 @@ p {
   color: var(--gold);
 }
 
-.nav__menu {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  margin: 0 auto;
-}
-
 .nav__links {
   display: flex;
   align-items: center;
   gap: 28px;
   list-style: none;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
-}
-
-/* Mobile-only duplicate of the Premium / Invite / sign-in actions, shown
-   inside the dropdown menu. Hidden on desktop - the originals in
-   .nav__actions are used there instead. */
-.nav__menu-actions {
-  display: none;
 }
 
 .nav__links a {
@@ -875,12 +861,6 @@ p {
   }
 }
 
-@media (max-width: 420px) {
-  .status-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* =====================================================================
    Updates page
    ===================================================================== */
@@ -1045,7 +1025,7 @@ p {
    ===================================================================== */
 
 @media (max-width: 860px) {
-  .nav__menu {
+  .nav__links {
     display: none;
   }
 
@@ -1062,52 +1042,18 @@ p {
     cursor: pointer;
   }
 
-  .nav.is-open .nav__menu {
+  .nav.is-open .nav__links {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
     position: absolute;
     top: var(--nav-height);
     left: 0;
     right: 0;
     background: var(--ink-soft);
     border-bottom: 1px solid var(--line);
-    padding: 18px 24px 24px;
+    padding: 18px 24px;
     gap: 16px;
     margin: 0;
-    max-height: calc(100vh - var(--nav-height));
-    overflow-y: auto;
-  }
-
-  .nav.is-open .nav__links {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
-  }
-
-  .nav.is-open .nav__menu-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding-top: 16px;
-    border-top: 1px solid var(--line);
-  }
-
-  .nav__menu-actions .btn,
-  .nav__menu-actions .nav__user {
-    width: 100%;
-    justify-content: center;
-  }
-
-  /* The Premium / Invite / account buttons in the top bar are hidden on
-     mobile - their equivalents inside .nav__menu-actions (above) are
-     shown instead, once the dropdown is open. */
-  .nav__actions .btn--gold,
-  .nav__actions .btn--ember,
-  .nav__actions .btn--outline,
-  .nav__actions .btn--ghost,
-  .nav__actions .nav__user {
-    display: none;
   }
 
   .footer__inner {
@@ -1117,26 +1063,8 @@ p {
 }
 
 /* =====================================================================
-   Small phones - tighten up vertical spacing
+   Premium page - pricing cards
    ===================================================================== */
-
-@media (max-width: 480px) {
-  .hero {
-    padding: 48px 0 64px;
-  }
-
-  .section {
-    padding: 48px 0;
-  }
-
-  .page-head {
-    padding: 48px 0 32px;
-  }
-
-  .container {
-    padding: 0 16px;
-  }
-}
 
 .pricing-grid {
   display: grid;
@@ -1273,4 +1201,236 @@ p {
   position: absolute;
   top: 14px;
   right: 14px;
+}
+
+/* =====================================================================
+   Dashboard
+   ===================================================================== */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.dashboard-server-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.dashboard-server-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.dashboard-server-card img,
+.dashboard-server-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.dashboard-server-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink-raised);
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+}
+
+.dashboard-server-card .info {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard-server-card .name {
+  font-weight: 700;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dashboard-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(216, 168, 92, 0.14);
+  color: var(--gold);
+}
+
+.dashboard-badge.is-admin {
+  background: rgba(226, 117, 74, 0.16);
+  color: var(--ember);
+}
+
+.dashboard-empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 60px 20px;
+}
+
+.dashboard-guild-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  margin: 0 auto 16px;
+  object-fit: cover;
+}
+
+/* =====================================================================
+   Dashboard - settings cards & forms
+   ===================================================================== */
+
+.settings-card {
+  background: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 24px;
+  scroll-margin-top: calc(var(--nav-height) + 16px);
+}
+
+.settings-card__head {
+  margin-bottom: 20px;
+}
+
+.settings-card__head h2 {
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.settings-card__head p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.perm-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ember);
+  border: 1px solid var(--ember);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
+.field {
+  margin-bottom: 18px;
+}
+
+.field > label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.field .help {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.field input[type="text"],
+.field textarea {
+  width: 100%;
+  background: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  transition: border-color 0.15s ease;
+}
+
+.field input[type="text"]:focus,
+.field textarea:focus {
+  border-color: var(--gold);
+  outline: none;
+}
+
+.field textarea {
+  min-height: 90px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Toggle switch */
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle .track {
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--ink-raised);
+  border: 1px solid var(--line);
+  position: relative;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.toggle .track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--text-muted);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.toggle input:checked + .track {
+  background: rgba(216, 168, 92, 0.2);
+  border-color: var(--gold);
+}
+
+.toggle input:checked + .track::after {
+  transform: translateX(20px);
+  background: var(--gold);
+}
+
+@media (max-width: 640px) {
+  .settings-card {
+    padding: 20px;
+  }
 }
