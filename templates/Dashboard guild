@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}{{ guild.name }} — Dashboard — Anko Uguisu{% endblock %}
+
+{% block content %}
+
+{% set icon = guild | guild_icon_url %}
+
+<header class="page-head">
+  <span class="page-head__eyebrow">Dashboard</span>
+  <div class="container">
+    {% if icon %}
+      <img class="dashboard-guild-icon" src="{{ icon }}" alt="">
+    {% endif %}
+    <h1>{{ guild.name }}</h1>
+    <p>
+      You're signed in with
+      {{ "Administrator" if permission_level == "administrator" else "Manage Server" }}
+      permissions for this server.
+    </p>
+    <div class="hero__actions" style="justify-content: center; margin-top: 20px;">
+      <a class="btn btn--outline" href="{{ url_for('dashboard') }}">&larr; All servers</a>
+    </div>
+  </div>
+</header>
+
+<section class="section" style="padding-top: 0;">
+  <div class="container" style="max-width: 760px;">
+
+    {% for section in sections %}
+      <div class="settings-card" id="{{ section.id }}">
+        <div class="settings-card__head">
+          <h2>
+            {{ section.label }}
+            {% if section.required_permission == "administrator" %}
+              <span class="perm-tag">Admin only</span>
+            {% endif %}
+          </h2>
+          <p>{{ section.description }}</p>
+        </div>
+
+        <form method="post" action="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
+          <input type="hidden" name="section" value="{{ section.id }}">
+
+          {% for field in section.fields %}
+            <div class="field">
+              {% if field.type == "toggle" %}
+                <label class="toggle">
+                  <input type="checkbox" name="{{ field.key }}" {{ "checked" if settings.get(field.key) }}>
+                  <span class="track"></span>
+                  {{ field.label }}
+                </label>
+              {% elif field.type == "textarea" %}
+                <label for="field-{{ field.key }}">{{ field.label }}</label>
+                <textarea id="field-{{ field.key }}" name="{{ field.key }}" placeholder="{{ field.placeholder or '' }}">{{ settings.get(field.key, "") }}</textarea>
+              {% elif field.type == "list" %}
+                <label for="field-{{ field.key }}">{{ field.label }}</label>
+                <textarea id="field-{{ field.key }}" name="{{ field.key }}" placeholder="{{ field.placeholder or '' }}">{{ (settings.get(field.key, []) or []) | join("\n") }}</textarea>
+              {% else %}
+                <label for="field-{{ field.key }}">{{ field.label }}</label>
+                <input type="text" id="field-{{ field.key }}" name="{{ field.key }}" placeholder="{{ field.placeholder or '' }}" value="{{ settings.get(field.key, "") }}">
+              {% endif %}
+
+              {% if field.help %}
+                <div class="help">{{ field.help }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+
+          <button type="submit" class="btn btn--gold">Save {{ section.label }}</button>
+        </form>
+      </div>
+    {% endfor %}
+
+  </div>
+</section>
+
+{% endblock %}
