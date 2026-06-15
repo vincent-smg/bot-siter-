@@ -2,19 +2,25 @@
 (function () {
   const nav = document.getElementById("site-nav");
   const toggle = document.getElementById("nav-toggle");
+  const panel = document.getElementById("nav-mobile-panel");
   if (!nav || !toggle) return;
 
   toggle.addEventListener("click", function () {
     const isOpen = nav.classList.toggle("is-open");
     toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    if (panel) panel.setAttribute("aria-hidden", isOpen ? "false" : "true");
   });
 
-  nav.querySelectorAll(".nav__menu a").forEach(function (link) {
-    link.addEventListener("click", function () {
-      nav.classList.remove("is-open");
-      toggle.setAttribute("aria-expanded", "false");
+  // Close the panel when a link inside it is clicked
+  if (panel) {
+    panel.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        nav.classList.remove("is-open");
+        toggle.setAttribute("aria-expanded", "false");
+        panel.setAttribute("aria-hidden", "true");
+      });
     });
-  });
+  }
 })();
 
 // Auto-dismiss flash messages
