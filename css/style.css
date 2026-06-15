@@ -151,17 +151,17 @@ p {
 .nav__brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-shrink: 0;
 }
 
 .nav__logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   object-fit: cover;
   border: 1px solid var(--line);
-  box-shadow: 0 0 0 3px rgba(216, 168, 92, 0.12);
+  box-shadow: 0 0 0 2px rgba(216, 168, 92, 0.12);
 }
 
 .nav__title {
@@ -1389,9 +1389,9 @@ p {
 
 .dashboard-server-card img,
 .dashboard-server-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   object-fit: cover;
   flex-shrink: 0;
 }
@@ -1403,7 +1403,7 @@ p {
   background: var(--ink-raised);
   color: var(--gold);
   font-family: var(--font-display);
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   border: 1px solid var(--line);
 }
 
@@ -1505,12 +1505,12 @@ p {
 }
 
 .dash-guild-header__icon {
-  width: 88px;
-  height: 88px;
-  border-radius: 20px;
+  width: 68px;
+  height: 68px;
+  border-radius: 16px;
   object-fit: cover;
   border: 2px solid var(--gold);
-  box-shadow: 0 0 0 4px rgba(216, 168, 92, 0.12), 0 12px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 3px rgba(216, 168, 92, 0.12), 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .dash-guild-header__icon--placeholder {
@@ -1935,4 +1935,27 @@ p {
 .btn--sm {
   padding: 8px 16px;
   font-size: 0.84rem;
+}
+
+/* Command usage parameters highlighting */
+.cmd-param {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 0 2px;
+  font-weight: 500;
+}
+
+.cmd-param--required {
+  background: rgba(226, 117, 74, 0.12);
+  color: var(--ember);
+  border: 1px solid rgba(226, 117, 74, 0.2);
+}
+
+.cmd-param--optional {
+  background: rgba(216, 168, 92, 0.12);
+  color: var(--gold-soft);
+  border: 1px solid rgba(216, 168, 92, 0.25);
 }
