@@ -18,6 +18,21 @@ class Config:
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # ------------------------------------------------------------------
+    # Security / cookies
+    # ------------------------------------------------------------------
+    # Render terminates TLS for you, so the app only ever sees plain HTTP
+    # internally. ProxyFix (set up in app.py) tells Flask to trust the
+    # X-Forwarded-Proto header from Render's proxy so it knows the real
+    # request was HTTPS - these cookie flags then behave correctly.
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+
+    # Tell Flask to generate https:// URLs (e.g. for the Discord OAuth
+    # redirect_uri) even though the app itself only sees http internally.
+    PREFERRED_URL_SCHEME = "https"
+
     # Discord OAuth2 application credentials
     # Create an application at https://discord.com/developers/applications
     DISCORD_CLIENT_ID = os.environ.get("DISCORD_CLIENT_ID", "")
@@ -59,3 +74,16 @@ class Config:
     # Patreon, or Discord premium role purchase link. Falls back to the
     # support server so the button always goes somewhere useful.
     PREMIUM_URL = os.environ.get("PREMIUM_URL", "https://ko-fi.com/your-page")
+
+    # ------------------------------------------------------------------
+    # Rate limiting (Flask-Limiter)
+    # ------------------------------------------------------------------
+    # "memory://" is fine for a single Render instance. If you ever scale
+    # to multiple instances/workers, switch this to a shared Redis URL
+    # (e.g. Render Key Value) so limits are tracked across all of them -
+    # otherwise each instance keeps its own separate counters.
+    RATELIMIT_STORAGE_URI = os.environ.get("RATELIMIT_STORAGE_URI", "memory://")
+
+    # Set to False to disable rate limiting entirely (e.g. for local dev
+    # if it gets in the way of testing).
+    RATELIMIT_ENABLED = os.environ.get("RATELIMIT_ENABLED", "true").lower() != "false"
