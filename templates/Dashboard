@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Anko Uguisu{% endblock %}
+
+{% block content %}
+
+<header class="page-head">
+  <span class="page-head__eyebrow">Dashboard</span>
+  <div class="container">
+    <h1>Your Servers</h1>
+    <p>Pick a server below to manage Anko's settings. Only servers where you have Manage Server or Administrator permissions, and where Anko is present, are shown here.</p>
+  </div>
+</header>
+
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+
+    {% if guilds %}
+      <div class="dashboard-grid">
+        {% for guild in guilds %}
+          {% set icon = guild | guild_icon_url %}
+          <a class="dashboard-server-card" href="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
+            {% if icon %}
+              <img src="{{ icon }}" alt="">
+            {% else %}
+              <div class="dashboard-server-icon">{{ guild.name[0] | upper }}</div>
+            {% endif %}
+            <div class="info">
+              <div class="name">{{ guild.name }}</div>
+              <span class="dashboard-badge {{ 'is-admin' if guild.permission_level == 'administrator' }}">
+                {{ "Administrator" if guild.permission_level == "administrator" else "Manage Server" }}
+              </span>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="dashboard-empty">
+        <p>We couldn't find any servers where you have Manage Server permissions and Anko is present.</p>
+        <div class="hero__actions" style="justify-content: center; margin-top: 24px;">
+          <a class="btn btn--gold" href="{{ invite_url }}" target="_blank" rel="noopener">Invite Anko to a server</a>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}
