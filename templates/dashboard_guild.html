@@ -5,74 +5,283 @@
 {% block content %}
 
 {% set icon = guild | guild_icon_url %}
+{% set is_admin = permission_level == "administrator" %}
+{% set section_icons = {
+  "welcome": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  "goodbye": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
+  "word_filter": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+  "witbot": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+} %}
 
-<header class="page-head">
-  <span class="page-head__eyebrow">Dashboard</span>
-  <div class="container">
-    {% if icon %}
-      <img class="dashboard-guild-icon" src="{{ icon }}" alt="">
-    {% endif %}
-    <h1>{{ guild.name }}</h1>
-    <p>
-      You're signed in with
-      {{ "Administrator" if permission_level == "administrator" else "Manage Server" }}
-      permissions for this server.
-    </p>
-    <div class="hero__actions" style="justify-content: center; margin-top: 20px;">
+{% macro section_icon(id) %}
+  {{ section_icons.get(id, section_icons['welcome']) | safe }}
+{% endmacro %}
+
+<header class="dash-hero dash-hero--guild">
+  <div class="dash-hero__glow dash-hero__glow--ember"></div>
+  <div class="container dash-guild-header">
+
+    <div class="dash-guild-header__icon-wrap">
+      {% if icon %}
+        <img class="dash-guild-header__icon" src="{{ icon }}" alt="">
+      {% else %}
+        <div class="dash-guild-header__icon dash-guild-header__icon--placeholder">
+          {{ guild.name[0] | upper }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="dash-guild-header__info">
+      <span class="page-head__eyebrow">Server Dashboard</span>
+
+      <h1 style="font-size: clamp(1.6rem, 4vw, 2.4rem);">{{ guild.name }}</h1>
+
+      <p>
+        Signed in with
+        {% if is_admin %}
+          <strong class="color-ember">Administrator</strong>
+        {% else %}
+          <strong class="color-gold">Manage Server</strong>
+        {% endif %}
+        permissions.
+      </p>
+
       <a class="btn btn--outline" href="{{ url_for('dashboard') }}">&larr; All servers</a>
     </div>
+
   </div>
 </header>
 
-<section class="section" style="padding-top: 0;">
-  <div class="container" style="max-width: 760px;">
+<section class="section" style="padding-top: 32px;">
+  <div class="container dash-guild-layout">
 
-    {% for section in sections %}
-      <div class="settings-card" id="{{ section.id }}">
-        <div class="settings-card__head">
-          <h2>
-            {{ section.label }}
-            {% if section.required_permission == "administrator" %}
-              <span class="perm-tag">Admin only</span>
-            {% endif %}
-          </h2>
-          <p>{{ section.description }}</p>
-        </div>
+    <aside class="dash-section-nav">
+      <div class="dash-section-nav__label">Sections</div>
+      <ul>
+        {% for section in sections %}
+          <li>
+            <a href="#{{ section.id }}" class="dash-section-nav__link" data-section="{{ section.id }}">
+              <span class="dash-section-nav__icon">
+                {{ section_icon(section.id) }}
+              </span>
 
-        <form method="post" action="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
-          <input type="hidden" name="section" value="{{ section.id }}">
+              {{ section.label }}
 
-          {% for field in section.fields %}
-            <div class="field">
-              {% if field.type == "toggle" %}
-                <label class="toggle">
-                  <input type="checkbox" name="{{ field.key }}" {{ "checked" if settings.get(field.key) }}>
-                  <span class="track"></span>
-                  {{ field.label }}
-                </label>
-              {% elif field.type == "textarea" %}
-                <label for="field-{{ field.key }}">{{ field.label }}</label>
-                <textarea id="field-{{ field.key }}" name="{{ field.key }}" placeholder="{{ field.placeholder or '' }}">{{ settings.get(field.key, "") }}</textarea>
-              {% elif field.type == "list" %}
-                <label for="field-{{ field.key }}">{{ field.label }}</label>
-                <textarea id="field-{{ field.key }}" name="{{ field.key }}" placeholder="{{ field.placeholder or '' }}">{{ (settings.get(field.key, []) or []) | join("\n") }}</textarea>
-              {% else %}
-                <label for="field-{{ field.key }}">{{ field.label }}</label>
-                <input type="text" id="field-{{ field.key }}" name="{{ field.key }}" placeholder="{{ field.placeholder or '' }}" value="{{ settings.get(field.key, "") }}">
+              {% if section.required_permission == "administrator" %}
+                <span class="dash-section-nav__admin-dot" title="Admin only"></span>
               {% endif %}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </aside>
 
-              {% if field.help %}
-                <div class="help">{{ field.help }}</div>
-              {% endif %}
+    <div class="dash-settings-col">
+      {% for section in sections %}
+        <div class="settings-card" id="{{ section.id }}">
+
+          <div class="settings-card__head">
+            <div class="settings-card__icon">
+              {{ section_icon(section.id) }}
             </div>
-          {% endfor %}
 
-          <button type="submit" class="btn btn--gold">Save {{ section.label }}</button>
-        </form>
-      </div>
-    {% endfor %}
+            <div>
+              <h2>
+                {{ section.label }}
+                {% if section.required_permission == "administrator" %}
+                  <span class="perm-tag">Admin only</span>
+                {% endif %}
+              </h2>
+              <p>{{ section.description }}</p>
+            </div>
+          </div>
+
+          <form method="post" action="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
+            <input type="hidden" name="section" value="{{ section.id }}">
+
+            {# CSRF support (if Flask-WTF enabled) #}
+            {% if csrf_token is defined %}
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {% endif %}
+
+            {% for field in section.fields %}
+              <div class="field">
+
+                {% if field.type == "toggle" %}
+                  <label class="toggle">
+                    <input type="checkbox"
+                           name="{{ field.key }}"
+                           {% if settings.get(field.key) %}checked{% endif %}>
+                    <span class="track"></span>
+                    {{ field.label }}
+                  </label>
+
+                {% elif field.type == "textarea" %}
+                  <label for="field-{{ field.key }}">{{ field.label }}</label>
+                  <textarea id="field-{{ field.key }}"
+                            name="{{ field.key }}"
+                            placeholder="{{ field.placeholder or '' }}">{{ settings.get(field.key, "") }}</textarea>
+
+                {% elif field.type == "list" %}
+                  <label for="field-{{ field.key }}">{{ field.label }}</label>
+
+                  {% set list_value = settings.get(field.key, []) %}
+                  <textarea id="field-{{ field.key }}"
+                            name="{{ field.key }}"
+                            style="display: none;">{{ list_value if list_value is string else (list_value | join("\n")) }}</textarea>
+
+                  <div class="tag-input-container" data-field-key="{{ field.key }}">
+                    <div class="tag-list"></div>
+                    <div class="tag-input-row">
+                      <input type="text"
+                             class="tag-input-field"
+                             placeholder="Type a word and press Enter...">
+                      <button type="button" class="btn btn--outline btn--sm tag-add-btn">Add</button>
+                    </div>
+                  </div>
+
+                {% else %}
+                  <label for="field-{{ field.key }}">{{ field.label }}</label>
+                  <input type="text"
+                         id="field-{{ field.key }}"
+                         name="{{ field.key }}"
+                         placeholder="{{ field.placeholder or '' }}"
+                         value="{{ settings.get(field.key, '') }}">
+                {% endif %}
+
+                {% if field.help %}
+                  <div class="help">{{ field.help }}</div>
+                {% endif %}
+
+              </div>
+            {% endfor %}
+
+            <div class="settings-card__footer">
+              <button type="submit" class="btn btn--gold">
+                Save {{ section.label }}
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+      {% endfor %}
+    </div>
 
   </div>
 </section>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+
+  const navLinks = document.querySelectorAll('.dash-section-nav__link');
+  const cards = document.querySelectorAll('.settings-card[id]');
+
+  if (!navLinks.length || !cards.length) return;
+
+  function setActive(id) {
+    navLinks.forEach(link => {
+      link.classList.toggle(
+        'is-active',
+        link.getAttribute('data-section') === id
+      );
+    });
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) setActive(entry.target.id);
+    });
+  }, { rootMargin: '-20% 0px -60% 0px' });
+
+  cards.forEach(card => observer.observe(card));
+
+  // smoother + keeps URL hash
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      const target = document.querySelector(link.getAttribute('href'));
+      if (!target) return;
+
+      history.pushState(null, "", link.getAttribute('href'));
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // set initial active section
+  if (cards.length) setActive(cards[0].id);
+
+  // Handle list/tag inputs
+  document.querySelectorAll('.tag-input-container').forEach(function (container) {
+    const fieldKey = container.getAttribute('data-field-key');
+    const textarea = document.getElementById('field-' + fieldKey);
+    const tagList = container.querySelector('.tag-list');
+    const inputField = container.querySelector('.tag-input-field');
+    const addBtn = container.querySelector('.tag-add-btn');
+
+    // Get current tags from textarea
+    let tags = textarea.value.split('\n').map(t => t.trim()).filter(t => t.length > 0);
+
+    function renderTags() {
+      tagList.innerHTML = '';
+      tags.forEach(function (tagText, index) {
+        const tagEl = document.createElement('span');
+        tagEl.className = 'tag';
+
+        const textSpan = document.createElement('span');
+        textSpan.className = 'tag-text';
+        textSpan.textContent = tagText;
+
+        const removeBtn = document.createElement('span');
+        removeBtn.className = 'tag-remove';
+        removeBtn.innerHTML = '&times;';
+        removeBtn.addEventListener('click', function () {
+          removeTag(index);
+        });
+
+        tagEl.appendChild(textSpan);
+        tagEl.appendChild(removeBtn);
+        tagList.appendChild(tagEl);
+      });
+      // Update hidden textarea
+      textarea.value = tags.join('\n');
+    }
+
+    function addTag() {
+      const val = inputField.value.trim();
+      if (val && !tags.includes(val)) {
+        tags.push(val);
+        renderTags();
+        inputField.value = '';
+      }
+    }
+
+    function removeTag(index) {
+      tags.splice(index, 1);
+      renderTags();
+    }
+
+    // Add on enter key or comma key
+    inputField.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addTag();
+      }
+    });
+
+    addBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      addTag();
+    });
+
+    // Initial render
+    renderTags();
+  });
+
+})();
+</script>
 {% endblock %}
