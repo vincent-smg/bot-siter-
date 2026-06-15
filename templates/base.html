@@ -23,39 +23,13 @@
         <span class="nav__title">Anko <span class="accent">Uguisu</span></span>
       </a>
 
-      <div class="nav__menu" id="nav-menu">
-        <ul class="nav__links">
-          <li><a href="{{ url_for('index') }}" class="{{ 'is-active' if request.endpoint == 'index' }}">Home</a></li>
-          <li><a href="{{ url_for('commands_page') }}" class="{{ 'is-active' if request.endpoint == 'commands_page' }}">Commands</a></li>
-          <li><a href="{{ url_for('premium_page') }}" class="{{ 'is-active' if request.endpoint == 'premium_page' }}">Premium</a></li>
-          <li><a href="{{ url_for('status_page') }}" class="{{ 'is-active' if request.endpoint == 'status_page' }}">Status</a></li>
-          <li><a href="{{ url_for('updates_page') }}" class="{{ 'is-active' if request.endpoint == 'updates_page' }}">Updates</a></li>
-        </ul>
-
-        <div class="nav__menu-actions">
-          <a class="btn btn--gold" href="{{ url_for('premium_page') }}">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 16L3 5l5.5 4L12 3l3.5 6L21 5l-2 11H5zm0 2h14v2H5v-2z"/></svg>
-            Premium
-          </a>
-          <a class="btn btn--ember" href="{{ invite_url }}" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.461-.63.873-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.001-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.331c-1.182 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418zm7.974 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-            Invite Anko
-          </a>
-
-          {% if current_user %}
-            <a class="nav__user" href="{{ url_for('index') }}#account" title="{{ current_user.display_name() }}">
-              <img class="nav__avatar" src="{{ current_user.avatar_url() }}" alt="">
-              <span>{{ current_user.display_name() }}</span>
-            </a>
-            <a class="btn btn--ghost" href="{{ url_for('logout') }}">Sign out</a>
-          {% else %}
-            <a class="btn btn--outline" href="{{ url_for('login') }}">
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.461-.63.873-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.001-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.331c-1.182 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418zm7.974 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-              Sign in
-            </a>
-          {% endif %}
-        </div>
-      </div>
+      <ul class="nav__links">
+        <li><a href="{{ url_for('index') }}" class="{{ 'is-active' if request.endpoint == 'index' }}">Home</a></li>
+        <li><a href="{{ url_for('commands_page') }}" class="{{ 'is-active' if request.endpoint == 'commands_page' }}">Commands</a></li>
+        <li><a href="{{ url_for('premium_page') }}" class="{{ 'is-active' if request.endpoint == 'premium_page' }}">Premium</a></li>
+        <li><a href="{{ url_for('status_page') }}" class="{{ 'is-active' if request.endpoint == 'status_page' }}">Status</a></li>
+        <li><a href="{{ url_for('updates_page') }}" class="{{ 'is-active' if request.endpoint == 'updates_page' }}">Updates</a></li>
+      </ul>
 
       <div class="nav__actions">
         <a class="btn btn--gold" href="{{ url_for('premium_page') }}">
@@ -80,9 +54,41 @@
           </a>
         {% endif %}
 
-        <button class="nav__menu-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-menu">
+        <button class="nav__menu-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
+      </div>
+    </div>
+
+    <div class="nav__mobile-panel" id="nav-mobile-panel" aria-hidden="true">
+      <ul class="nav__links">
+        <li><a href="{{ url_for('index') }}" class="{{ 'is-active' if request.endpoint == 'index' }}">Home</a></li>
+        <li><a href="{{ url_for('commands_page') }}" class="{{ 'is-active' if request.endpoint == 'commands_page' }}">Commands</a></li>
+        <li><a href="{{ url_for('premium_page') }}" class="{{ 'is-active' if request.endpoint == 'premium_page' }}">Premium</a></li>
+        <li><a href="{{ url_for('status_page') }}" class="{{ 'is-active' if request.endpoint == 'status_page' }}">Status</a></li>
+        <li><a href="{{ url_for('updates_page') }}" class="{{ 'is-active' if request.endpoint == 'updates_page' }}">Updates</a></li>
+      </ul>
+      <div class="nav__actions">
+        <a class="btn btn--gold" href="{{ url_for('premium_page') }}">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 16L3 5l5.5 4L12 3l3.5 6L21 5l-2 11H5zm0 2h14v2H5v-2z"/></svg>
+          Premium
+        </a>
+        <a class="btn btn--ember" href="{{ invite_url }}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.461-.63.873-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.001-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.331c-1.182 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418zm7.974 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          Invite Anko
+        </a>
+        {% if current_user %}
+          <a class="nav__user" href="{{ url_for('index') }}#account" title="{{ current_user.display_name() }}">
+            <img class="nav__avatar" src="{{ current_user.avatar_url() }}" alt="">
+            <span>{{ current_user.display_name() }}</span>
+          </a>
+          <a class="btn btn--ghost" href="{{ url_for('logout') }}">Sign out</a>
+        {% else %}
+          <a class="btn btn--outline" href="{{ url_for('login') }}">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.461-.63.873-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.001-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.331c-1.182 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418zm7.974 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            Sign in
+          </a>
+        {% endif %}
       </div>
     </div>
   </nav>
