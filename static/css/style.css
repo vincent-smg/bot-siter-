@@ -1025,10 +1025,14 @@ p {
    ===================================================================== */
 
 @media (max-width: 860px) {
-  .nav__links {
+  /* Hide desktop links and action buttons from the bar itself */
+  .nav__links,
+  .nav__actions .btn,
+  .nav__actions .nav__user {
     display: none;
   }
 
+  /* Show only the toggle button */
   .nav__menu-toggle {
     display: inline-flex;
     align-items: center;
@@ -1040,25 +1044,112 @@ p {
     background: var(--ink-soft);
     color: var(--text);
     cursor: pointer;
+    flex-shrink: 0;
   }
 
-  .nav.is-open .nav__links {
-    display: flex;
-    flex-direction: column;
+  /* Single dropdown panel, revealed when .is-open */
+  .nav__mobile-panel {
+    display: none;
     position: absolute;
     top: var(--nav-height);
     left: 0;
     right: 0;
+    z-index: 99;
     background: var(--ink-soft);
     border-bottom: 1px solid var(--line);
-    padding: 18px 24px;
-    gap: 16px;
-    margin: 0;
+    padding: 8px 24px 24px;
+  }
+
+  .nav.is-open .nav__mobile-panel {
+    display: block;
+  }
+
+  /* Nav links inside the panel */
+  .nav__mobile-panel .nav__links {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0 0 16px;
+    padding: 0;
+  }
+
+  .nav__mobile-panel .nav__links a {
+    display: block;
+    padding: 12px 0;
+    font-size: 1rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav__mobile-panel .nav__links li:last-child a {
+    border-bottom: none;
+  }
+
+  .nav__mobile-panel .nav__links a.is-active {
+    color: var(--text);
+  }
+
+  /* Action buttons inside the panel */
+  .nav__mobile-panel .nav__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .nav__mobile-panel .nav__actions .btn,
+  .nav__mobile-panel .nav__actions .nav__user {
+    display: inline-flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .nav__mobile-panel .nav__actions .nav__user {
+    width: auto;
+    justify-content: flex-start;
   }
 
   .footer__inner {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 48px 0 56px;
+  }
+
+  .hero__stats {
+    gap: 20px;
+  }
+
+  .page-head {
+    padding: 44px 0 28px;
+  }
+
+  .section {
+    padding: 44px 0;
+  }
+
+  .feature-grid {
+    gap: 14px;
+  }
+
+  .command-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .status-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer__links {
+    gap: 14px;
   }
 }
 
