@@ -26,9 +26,10 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import Config
 from data.commands import COMMAND_CATEGORIES, PREFIX
+from data.dashboard_settings import DASHBOARD_SECTIONS
 from data.premium import PREMIUM_PERKS, PREMIUM_TIERS
 from data.updates import UPDATES
-from models import User, db
+from models import GuildSettings, User, db
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATUS_FILE = os.path.join(BASE_DIR, "data", "bot_status.json")
@@ -41,7 +42,41 @@ DEFAULT_STATUS = {
     "shard_count": 1,
     "started_at": None,
     "last_updated": None,
+    "guilds": [],
 }
+
+
+# Discord permission bitflags we care about for the dashboard.
+# Full list: https://discord.com/developers/docs/topics/permissions
+PERM_ADMINISTRATOR = 0x8
+PERM_MANAGE_GUILD = 0x20
+
+
+def guild_permission_level(permissions):
+    """
+    Given the 'permissions' bitfield Discord returns for a guild in
+    /users/@me/guilds, return "administrator", "manage_guild", or None.
+    """
+    try:
+        perms = int(permissions)
+    except (TypeError, ValueError):
+        return None
+
+    if perms & PERM_ADMINISTRATOR:
+        return "administrator"
+    if perms & PERM_MANAGE_GUILD:
+        return "manage_guild"
+    return None
+
+
+def guild_icon_url(guild, size=64):
+    """Jinja filter: build a CDN URL for a guild's icon, or None."""
+    icon = (guild or {}).get("icon")
+    guild_id = (guild or {}).get("id")
+    if not icon or not guild_id:
+        return None
+    ext = "gif" if icon.startswith("a_") else "png"
+    return f"https://cdn.discordapp.com/icons/{guild_id}/{icon}.{ext}?size={size}"
 
 
 def create_app():
@@ -156,6 +191,47 @@ def create_app():
         resp.raise_for_status()
         return resp.json()
 
+    def fetch_discord_guilds(access_token):
+        """
+        Returns the list of guilds the logged-in user is in, each with
+        an 'id', 'name', 'icon', and a 'permissions' bitfield string
+        describing that user's permissions in that guild.
+        """
+        headers = {"Authorization": f"Bearer {access_token}"}
+        resp = requests.get(
+            f"{app.config['DISCORD_API_BASE_URL']}/users/@me/guilds",
+            headers=headers,
+            timeout=10,
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+    def get_valid_access_token(user):
+        """
+        Returns a usable Discord access token for this user, refreshing
+        it first if it has expired. Returns None if refreshing fails
+        (e.g. the user revoked access) - callers should treat that as
+        "needs to sign in again".
+        """
+        if user.token_expires_at and datetime.utcnow() >= user.token_expires_at:
+            if not user.refresh_token:
+                return None
+            try:
+                token_data = refresh_access_token(user.refresh_token)
+            except requests.RequestException:
+                return None
+
+            user.access_token = token_data["access_token"]
+            user.refresh_token = token_data.get(
+                "refresh_token", user.refresh_token
+            )
+            user.token_expires_at = datetime.utcnow() + timedelta(
+                seconds=token_data.get("expires_in", 0)
+            )
+            db.session.commit()
+
+        return user.access_token
+
     def upsert_user(discord_user, token_data):
         discord_id = discord_user["id"]
         user = User.query.get(discord_id)
@@ -257,6 +333,8 @@ def create_app():
             "bot_name": "Anko Uguisu",
         }
 
+    app.jinja_env.filters["guild_icon_url"] = guild_icon_url
+
     # ------------------------------------------------------------------
     # Auth routes
     # ------------------------------------------------------------------
@@ -273,7 +351,7 @@ def create_app():
             "client_id": app.config["DISCORD_CLIENT_ID"],
             "redirect_uri": app.config["DISCORD_REDIRECT_URI"],
             "response_type": "code",
-            "scope": "identify",
+            "scope": "identify guilds",
             "state": state,
             "prompt": "consent",
         }
@@ -355,6 +433,142 @@ def create_app():
         return render_template("terms.html")
 
     # ------------------------------------------------------------------
+    # Dashboard
+    #
+    # /dashboard         - lists servers the signed-in user can manage
+    #                       (Manage Server or Administrator) where Anko
+    #                       is also present.
+    # /dashboard/<id>     - settings for one server. Which settings
+    #                       sections are shown depends on the user's
+    #                       permission level in that server, per
+    #                       DASHBOARD_SECTIONS in data/dashboard_settings.py.
+    # ------------------------------------------------------------------
+    @app.route("/dashboard")
+    def dashboard():
+        if not g.user:
+            flash("Please sign in with Discord to view your dashboard.")
+            return redirect(url_for("login"))
+
+        access_token = get_valid_access_token(g.user)
+        managed_guilds = []
+
+        if not access_token:
+            flash("Your Discord session expired. Please sign in again.")
+            return redirect(url_for("login"))
+
+        try:
+            user_guilds = fetch_discord_guilds(access_token)
+        except requests.RequestException:
+            user_guilds = []
+            flash(
+                "Couldn't reach Discord to load your servers. "
+                "Please try again in a moment."
+            )
+
+        bot_guild_ids = {str(gd.get("id")) for gd in read_status().get("guilds", [])}
+
+        for guild in user_guilds:
+            level = guild_permission_level(guild.get("permissions"))
+            if level and str(guild.get("id")) in bot_guild_ids:
+                managed_guilds.append(
+                    {
+                        "id": guild["id"],
+                        "name": guild["name"],
+                        "icon": guild.get("icon"),
+                        "permission_level": level,
+                    }
+                )
+
+        managed_guilds.sort(key=lambda gd: gd["name"].lower())
+
+        return render_template("dashboard.html", guilds=managed_guilds)
+
+    @app.route("/dashboard/<guild_id>", methods=["GET", "POST"])
+    def dashboard_guild(guild_id):
+        if not g.user:
+            flash("Please sign in with Discord to view your dashboard.")
+            return redirect(url_for("login"))
+
+        access_token = get_valid_access_token(g.user)
+        if not access_token:
+            flash("Your Discord session expired. Please sign in again.")
+            return redirect(url_for("login"))
+
+        try:
+            user_guilds = fetch_discord_guilds(access_token)
+        except requests.RequestException:
+            flash("Couldn't reach Discord to verify your permissions.")
+            return redirect(url_for("dashboard"))
+
+        guild_info = next(
+            (gd for gd in user_guilds if str(gd.get("id")) == str(guild_id)), None
+        )
+        permission_level = (
+            guild_permission_level(guild_info.get("permissions"))
+            if guild_info
+            else None
+        )
+
+        if not guild_info or not permission_level:
+            abort(403)
+
+        bot_guild_ids = {str(gd.get("id")) for gd in read_status().get("guilds", [])}
+        if str(guild_id) not in bot_guild_ids:
+            abort(404)
+
+        settings = GuildSettings.query.get(guild_id)
+        if settings is None:
+            settings = GuildSettings(guild_id=guild_id, data={})
+
+        # Only show sections this user is allowed to edit.
+        # "manage_guild" sections are visible to anyone with Manage Server
+        # or Administrator; "administrator" sections need full admin.
+        visible_sections = [
+            section
+            for section in DASHBOARD_SECTIONS
+            if permission_level == "administrator"
+            or section["required_permission"] == "manage_guild"
+        ]
+
+        if request.method == "POST":
+            section_id = request.form.get("section")
+            section = next(
+                (s for s in visible_sections if s["id"] == section_id), None
+            )
+            if section is None:
+                abort(400)
+
+            data = dict(settings.data or {})
+            for field in section["fields"]:
+                key = field["key"]
+                if field["type"] == "toggle":
+                    data[key] = request.form.get(key) == "on"
+                elif field["type"] == "list":
+                    raw = request.form.get(key, "")
+                    data[key] = [
+                        line.strip() for line in raw.splitlines() if line.strip()
+                    ]
+                else:
+                    data[key] = request.form.get(key, "").strip()
+
+            settings.data = data
+            settings.guild_name = guild_info.get("name")
+            settings.guild_icon = guild_info.get("icon")
+            db.session.add(settings)
+            db.session.commit()
+
+            flash(f"Saved {section['label']} settings.")
+            return redirect(f"{url_for('dashboard_guild', guild_id=guild_id)}#{section_id}")
+
+        return render_template(
+            "dashboard_guild.html",
+            guild=guild_info,
+            permission_level=permission_level,
+            sections=visible_sections,
+            settings=settings.data or {},
+        )
+
+    # ------------------------------------------------------------------
     # Status API - the bot process pushes live stats here, the status
     # page polls it for live numbers.
     # ------------------------------------------------------------------
@@ -378,6 +592,7 @@ def create_app():
             "user_count",
             "shard_count",
             "started_at",
+            "guilds",
         ):
             if field in payload:
                 status[field] = payload[field]
@@ -386,6 +601,31 @@ def create_app():
         status["last_updated"] = datetime.utcnow().isoformat()
         write_status(status)
         return jsonify({"ok": True})
+
+    # ------------------------------------------------------------------
+    # Guild config API - the dashboard writes settings here via the web
+    # UI (see /dashboard/<guild_id> above); the bot reads them from here
+    # to apply on its side (welcome messages, word filter, etc).
+    # ------------------------------------------------------------------
+    @app.route("/api/guild-config/<guild_id>", methods=["GET"])
+    @limiter.limit("60 per minute")
+    def api_guild_config(guild_id):
+        key = request.headers.get("X-Status-Key")
+        if key != app.config["STATUS_API_KEY"]:
+            abort(401)
+
+        settings = GuildSettings.query.get(guild_id)
+        return jsonify(settings.data if settings else {})
+
+    @app.route("/api/guild-configs", methods=["GET"])
+    @limiter.limit("30 per minute")
+    def api_guild_configs():
+        key = request.headers.get("X-Status-Key")
+        if key != app.config["STATUS_API_KEY"]:
+            abort(401)
+
+        all_settings = GuildSettings.query.all()
+        return jsonify({s.guild_id: (s.data or {}) for s in all_settings})
 
     return app
 
