@@ -55,6 +55,25 @@
 {% block scripts %}
 <script>
   (function () {
+    // Format parameters in command usages
+    document.querySelectorAll(".command-card .name").forEach(function (el) {
+      let text = el.textContent;
+      // Escape HTML entities to prevent rendering issues
+      let escaped = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+      // Replace &lt;param&gt; with styled span
+      escaped = escaped.replace(/(&lt;[^&]+&gt;)/g, '<span class="cmd-param cmd-param--required">$1</span>');
+      // Replace [param] with styled span
+      escaped = escaped.replace(/(\[[^\]]+\])/g, '<span class="cmd-param cmd-param--optional">$1</span>');
+      
+      el.innerHTML = escaped;
+    });
+
     // Click-to-copy
     document.querySelectorAll(".command-card").forEach(function (card) {
       card.addEventListener("click", function () {
