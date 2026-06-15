@@ -20,6 +20,9 @@ from flask import (
     session,
     url_for,
 )
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import Config
 from data.commands import COMMAND_CATEGORIES, PREFIX
@@ -43,11 +46,46 @@ DEFAULT_STATUS = {
 
 def create_app():
     app = Flask(__name__)
+
+    # ------------------------------------------------------------------
+    # Trust Render's proxy headers.
+    #
+    # Render (and the Cloudflare layer in front of it) terminates TLS and
+    # forwards requests to your app over plain HTTP, adding
+    # X-Forwarded-For / X-Forwarded-Proto / X-Forwarded-Host headers.
+    # Without this, Flask thinks every request is plain HTTP from
+    # Render's internal IP, which breaks:
+    #   - secure cookies (SESSION_COOKIE_SECURE)
+    #   - https:// OAuth redirect URIs
+    #   - rate limiting / logging by real client IP
+    #
+    # x_for=1 / x_proto=1 / x_host=1 means "trust exactly one layer of
+    # proxy" for each of those headers, which matches Render's setup.
+    # ------------------------------------------------------------------
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+
     app.config.from_object(Config)
 
     db.init_app(app)
     with app.app_context():
         db.create_all()
+
+    # ------------------------------------------------------------------
+    # Rate limiting
+    #
+    # Render's own DDoS protection handles large-scale floods, but
+    # per-route rate limiting protects specific sensitive endpoints
+    # (login/OAuth, the bot status webhook) from abuse, brute-forcing,
+    # or accidental loops. Limits are keyed on the real client IP thanks
+    # to ProxyFix above.
+    # ------------------------------------------------------------------
+    limiter = Limiter(
+        get_remote_address,
+        app=app,
+        default_limits=["200 per hour"],
+        storage_uri=app.config["RATELIMIT_STORAGE_URI"],
+        enabled=app.config["RATELIMIT_ENABLED"],
+    )
 
     # ------------------------------------------------------------------
     # Helpers
@@ -223,6 +261,7 @@ def create_app():
     # Auth routes
     # ------------------------------------------------------------------
     @app.route("/login")
+    @limiter.limit("10 per minute")
     def login():
         if g.user:
             return redirect(url_for("index"))
@@ -242,6 +281,7 @@ def create_app():
         return redirect(f"{app.config['DISCORD_AUTHORIZE_URL']}?{query}")
 
     @app.route("/callback")
+    @limiter.limit("10 per minute")
     def callback():
         error = request.args.get("error")
         if error:
@@ -319,10 +359,12 @@ def create_app():
     # page polls it for live numbers.
     # ------------------------------------------------------------------
     @app.route("/api/status", methods=["GET"])
+    @limiter.limit("30 per minute")
     def api_status_get():
         return jsonify(read_status())
 
     @app.route("/api/status", methods=["POST"])
+    @limiter.limit("20 per minute")
     def api_status_post():
         key = request.headers.get("X-Status-Key")
         if key != app.config["STATUS_API_KEY"]:
