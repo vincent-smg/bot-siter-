@@ -18,13 +18,14 @@ class Config:
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # ------------------------------------------------------------------
-    # Security / cookies
-    # ------------------------------------------------------------------
-    # Render terminates TLS for you, so the app only ever sees plain HTTP
-    # internally. ProxyFix (set up in app.py) tells Flask to trust the
-    # X-Forwarded-Proto header from Render's proxy so it knows the real
-    # request was HTTPS - these cookie flags then behave correctly.
+   
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    from flask import Flask
+
+    app = Flask(__name__)
+
+
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
