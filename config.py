@@ -20,7 +20,7 @@ class Config:
     DISCORD_API_BASE_URL = "https://discord.com/api"
     DISCORD_AUTHORIZE_URL = "https://discord.com/oauth2/authorize"
     DISCORD_TOKEN_URL = "https://discord.com/api/oauth2/token"
-    
+    DISCORD_BOT_TOKEN = os.environ.get("DISCORD_BOT_TOKEN")
     DISCORD_BOT_INVITE_URL = os.environ.get("DISCORD_BOT_INVITE_URL", "")
     USERNAME_CHECK_INTERVAL = int(os.environ.get("USERNAME_CHECK_INTERVAL", "600"))
     STATUS_API_KEY = os.environ.get("STATUS_API_KEY", "change-me-bot-status-key")
