@@ -1204,15 +1204,15 @@ p {
 }
 
 /* =====================================================================
-   Utility colours used in dashboard templates
+   Utility colours
    ===================================================================== */
 
-.accent          { color: var(--gold); }
-.color-gold      { color: var(--gold); }
-.color-ember     { color: var(--ember); }
+.accent        { color: var(--gold); }
+.color-gold    { color: var(--gold); }
+.color-ember   { color: var(--ember); }
 
 /* =====================================================================
-   Button extras (sm size used in tag input)
+   Button extras
    ===================================================================== */
 
 .btn--sm {
@@ -1221,125 +1221,69 @@ p {
 }
 
 /* =====================================================================
-   Dashboard hero banner  (dashboard.html + dashboard_guild.html)
+   Dashboard — user strip  (below the page-head on /dashboard)
    ===================================================================== */
 
-.dash-hero {
-  position: relative;
-  overflow: hidden;
-  padding: 56px 0 48px;
-  border-bottom: 1px solid var(--line);
-}
-
-/* ambient glow layer */
-.dash-hero__glow {
-  position: absolute;
-  inset: -30% -10% auto -10%;
-  height: 420px;
-  background: radial-gradient(
-    circle at 60% 30%,
-    rgba(216, 168, 92, 0.14),
-    rgba(226, 117, 74, 0.06) 50%,
-    transparent 70%
-  );
-  pointer-events: none;
-}
-
-/* ember-tinted glow variant used on the guild page */
-.dash-hero__glow--ember {
-  background: radial-gradient(
-    circle at 40% 40%,
-    rgba(226, 117, 74, 0.16),
-    rgba(216, 168, 92, 0.06) 50%,
-    transparent 70%
-  );
-}
-
-/* hero inner layout: text left, user-card right */
-.dash-hero__inner {
-  position: relative;
+.dash-user-strip {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
+  gap: 20px;
   flex-wrap: wrap;
-}
-
-.dash-hero__text {
-  flex: 1 1 320px;
-}
-
-.dash-hero__text h1 {
-  font-size: clamp(2rem, 4vw, 2.8rem);
-  line-height: 1.1;
-  margin: 10px 0 14px;
-}
-
-.dash-hero__text p {
-  color: var(--text-muted);
-  font-size: 1rem;
-  max-width: 480px;
-}
-
-/* =====================================================================
-   Dashboard user card  (top-right of /dashboard hero)
-   ===================================================================== */
-
-.dash-user-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 18px 22px;
+  padding: 18px 24px;
   background: var(--ink-soft);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  flex-shrink: 0;
+  margin-bottom: 32px;
 }
 
-.dash-user-card__avatar {
-  width: 52px;
-  height: 52px;
+.dash-user-strip__left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dash-user-strip__avatar {
+  width: 40px;
+  height: 40px;
   border-radius: 999px;
   object-fit: cover;
   border: 2px solid var(--line);
+  flex-shrink: 0;
 }
 
-.dash-user-card__name {
+.dash-user-strip__name {
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.97rem;
   color: var(--text);
 }
 
-.dash-user-card__sub {
-  font-size: 0.84rem;
+.dash-user-strip__sub {
+  font-size: 0.82rem;
   color: var(--text-muted);
   margin-top: 2px;
 }
 
-.dash-user-card__stat {
-  text-align: center;
-  padding-left: 18px;
-  border-left: 1px solid var(--line);
+.dash-user-strip__right {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
 }
 
-.dash-user-card__stat-num {
-  display: block;
+.dash-user-strip__count {
   font-family: var(--font-display);
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   color: var(--gold-soft);
   line-height: 1;
 }
 
-.dash-user-card__stat-label {
-  display: block;
-  font-size: 0.78rem;
+.dash-user-strip__count-label {
+  font-size: 0.82rem;
   color: var(--text-muted);
-  margin-top: 4px;
-  white-space: nowrap;
 }
 
 /* =====================================================================
-   Section label row  ("Managed Servers  3")
+   Dashboard — section label row  ("Managed Servers  3")
    ===================================================================== */
 
 .dash-section-label {
@@ -1347,11 +1291,11 @@ p {
   align-items: center;
   gap: 10px;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .dash-section-count {
@@ -1364,11 +1308,11 @@ p {
   background: rgba(216, 168, 92, 0.14);
   color: var(--gold);
   border-radius: 999px;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
 }
 
 /* =====================================================================
-   Dashboard server grid  (/dashboard)
+   Dashboard — server grid  (/dashboard)
    ===================================================================== */
 
 .dashboard-grid {
@@ -1380,8 +1324,8 @@ p {
 .dashboard-server-card {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 18px 20px;
+  gap: 14px;
+  padding: 16px 18px;
   background: var(--ink-soft);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -1397,7 +1341,43 @@ p {
   background: var(--ink-raised);
 }
 
-/* guild icon image */
+/* corner accent marks on hover, matching .command-card */
+.dashboard-server-card::before,
+.dashboard-server-card::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--gold);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+.dashboard-server-card {
+  position: relative;
+}
+
+.dashboard-server-card::before {
+  top: 6px;
+  left: 6px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.dashboard-server-card::after {
+  bottom: 6px;
+  right: 6px;
+  border-left: none;
+  border-top: none;
+}
+
+.dashboard-server-card:hover::before,
+.dashboard-server-card:hover::after {
+  opacity: 1;
+}
+
+/* guild icon — image */
 .dashboard-server-card > img {
   width: 36px;
   height: 36px;
@@ -1407,7 +1387,7 @@ p {
   border: 1px solid var(--line);
 }
 
-/* guild icon placeholder (first letter) */
+/* guild icon — placeholder letter */
 .dashboard-server-icon {
   width: 36px;
   height: 36px;
@@ -1418,7 +1398,7 @@ p {
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.1rem;
   color: var(--gold);
   flex-shrink: 0;
 }
@@ -1430,7 +1410,7 @@ p {
 
 .dashboard-server-card .name {
   font-weight: 600;
-  font-size: 0.97rem;
+  font-size: 0.95rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1440,25 +1420,25 @@ p {
 .dashboard-badge {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.67rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 3px 10px;
   border-radius: 999px;
-  background: rgba(216, 168, 92, 0.13);
+  background: rgba(216, 168, 92, 0.12);
   color: var(--gold);
-  border: 1px solid rgba(216, 168, 92, 0.25);
+  border: 1px solid rgba(216, 168, 92, 0.22);
 }
 
 .dashboard-badge.is-admin {
-  background: rgba(226, 117, 74, 0.13);
+  background: rgba(226, 117, 74, 0.12);
   color: var(--ember);
-  border-color: rgba(226, 117, 74, 0.25);
+  border-color: rgba(226, 117, 74, 0.22);
 }
 
 .dashboard-server-card__arrow {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   color: var(--text-muted);
   flex-shrink: 0;
   transition: color 0.15s ease, transform 0.15s ease;
@@ -1470,7 +1450,7 @@ p {
 }
 
 /* =====================================================================
-   Dashboard empty state
+   Dashboard — empty state
    ===================================================================== */
 
 .dashboard-empty {
@@ -1481,26 +1461,26 @@ p {
 }
 
 .dashboard-empty__icon {
-  width: 68px;
-  height: 68px;
-  border-radius: 18px;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
   background: var(--ink-soft);
   border: 1px solid var(--line);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 24px;
+  margin: 0 auto 22px;
   color: var(--text-muted);
 }
 
 .dashboard-empty__icon svg {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
 }
 
 .dashboard-empty h2 {
-  font-size: 1.6rem;
-  margin-bottom: 12px;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
 }
 
 .dashboard-empty p {
@@ -1510,93 +1490,82 @@ p {
 }
 
 /* =====================================================================
-   Guild dashboard hero  (/dashboard/<id>)
+   Guild dashboard — heading block inside page-head
    ===================================================================== */
 
-.dash-hero--guild {
-  padding: 44px 0 40px;
-}
-
-.dash-guild-header {
-  position: relative;
+.dash-guild-heading {
   display: flex;
   align-items: center;
-  gap: 28px;
+  justify-content: center;
+  gap: 20px;
   flex-wrap: wrap;
+  margin-top: 8px;
 }
 
-.dash-guild-header__icon-wrap {
+.dash-guild-heading__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 2px solid var(--line);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  display: block;
   flex-shrink: 0;
 }
 
-.dash-guild-header__icon {
-  width: 80px;
-  height: 80px;
-  border-radius: 20px;
-  object-fit: cover;
-  border: 2px solid var(--line);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  display: block;
-}
-
-.dash-guild-header__icon--placeholder {
+.dash-guild-heading__icon--placeholder {
   background: var(--ink-raised);
   border: 2px solid var(--line);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: var(--gold);
 }
 
-.dash-guild-header__info {
-  flex: 1;
-}
-
-.dash-guild-header__info .page-head__eyebrow {
+.dash-guild-heading h1 {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
   margin-bottom: 6px;
 }
 
-.dash-guild-header__info h1 {
-  margin: 6px 0 10px;
-}
-
-.dash-guild-header__info p {
+.dash-guild-heading p {
   color: var(--text-muted);
-  font-size: 0.93rem;
-  margin-bottom: 18px;
+  font-size: 0.92rem;
 }
 
 /* =====================================================================
-   Guild dashboard two-column layout
-   (sticky sidebar nav + settings column)
+   Guild dashboard — two-column layout
    ===================================================================== */
 
 .dash-guild-layout {
   display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 36px;
+  grid-template-columns: 210px 1fr;
+  gap: 32px;
   align-items: start;
 }
 
 /* =====================================================================
-   Section sidebar nav
+   Guild dashboard — sidebar nav
    ===================================================================== */
 
 .dash-section-nav {
   position: sticky;
   top: calc(var(--nav-height) + 20px);
+  background: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 10px;
 }
 
 .dash-section-nav__label {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-bottom: 10px;
-  padding: 0 12px;
+  margin-bottom: 8px;
+  padding: 0 10px;
 }
 
 .dash-section-nav ul {
@@ -1611,18 +1580,17 @@ p {
 .dash-section-nav__link {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  gap: 9px;
+  padding: 9px 10px;
   border-radius: var(--radius-sm);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
   transition: background-color 0.14s ease, color 0.14s ease;
-  position: relative;
   text-decoration: none;
 }
 
 .dash-section-nav__link:hover {
-  background: var(--ink-soft);
+  background: var(--ink-raised);
   color: var(--text);
 }
 
@@ -1632,8 +1600,8 @@ p {
 }
 
 .dash-section-nav__icon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -1646,8 +1614,8 @@ p {
 }
 
 .dash-section-nav__admin-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 999px;
   background: var(--ember);
   margin-left: auto;
@@ -1661,7 +1629,7 @@ p {
 .dash-settings-col {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
   min-width: 0;
 }
 
@@ -1671,20 +1639,25 @@ p {
   border-radius: var(--radius);
   overflow: hidden;
   scroll-margin-top: calc(var(--nav-height) + 24px);
+  transition: border-color 0.2s ease;
+}
+
+.settings-card:target {
+  border-color: rgba(216, 168, 92, 0.4);
 }
 
 .settings-card__head {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
-  padding: 24px 28px;
+  gap: 14px;
+  padding: 22px 24px;
   border-bottom: 1px solid var(--line);
 }
 
 .settings-card__icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
   background: rgba(216, 168, 92, 0.1);
   color: var(--gold);
   display: flex;
@@ -1694,44 +1667,44 @@ p {
 }
 
 .settings-card__icon svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .settings-card__head h2 {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   margin-bottom: 4px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .settings-card__head p {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 .perm-tag {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.63rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 3px 9px;
+  padding: 3px 8px;
   border-radius: 999px;
-  background: rgba(226, 117, 74, 0.13);
+  background: rgba(226, 117, 74, 0.12);
   color: var(--ember);
-  border: 1px solid rgba(226, 117, 74, 0.25);
+  border: 1px solid rgba(226, 117, 74, 0.22);
   vertical-align: middle;
 }
 
 .settings-card form {
-  padding: 24px 28px;
+  padding: 22px 24px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
 .settings-card__footer {
@@ -1751,7 +1724,7 @@ p {
 }
 
 .field label {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 600;
   color: var(--text);
 }
@@ -1787,7 +1760,7 @@ p {
 }
 
 .help {
-  font-size: 0.82rem;
+  font-size: 0.81rem;
   color: var(--text-muted);
   line-height: 1.5;
 }
@@ -1814,8 +1787,8 @@ p {
 }
 
 .toggle .track {
-  width: 44px;
-  height: 24px;
+  width: 42px;
+  height: 23px;
   border-radius: 999px;
   background: var(--ink);
   border: 1px solid var(--line);
@@ -1830,20 +1803,20 @@ p {
   left: 3px;
   top: 50%;
   transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   border-radius: 999px;
   background: var(--text-muted);
   transition: left 0.18s ease, background-color 0.18s ease;
 }
 
 .toggle input:checked + .track {
-  background: rgba(147, 160, 107, 0.25);
+  background: rgba(147, 160, 107, 0.22);
   border-color: var(--sage);
 }
 
 .toggle input:checked + .track::after {
-  left: calc(100% - 19px);
+  left: calc(100% - 18px);
   background: var(--sage);
 }
 
@@ -1860,8 +1833,8 @@ p {
 .tag-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  min-height: 32px;
+  gap: 7px;
+  min-height: 30px;
 }
 
 .tag {
@@ -1869,16 +1842,14 @@ p {
   align-items: center;
   gap: 6px;
   padding: 4px 10px;
-  background: rgba(216, 168, 92, 0.12);
-  border: 1px solid rgba(216, 168, 92, 0.25);
+  background: rgba(216, 168, 92, 0.11);
+  border: 1px solid rgba(216, 168, 92, 0.22);
   border-radius: 999px;
-  font-size: 0.84rem;
+  font-size: 0.83rem;
   color: var(--gold-soft);
 }
 
-.tag-text {
-  line-height: 1;
-}
+.tag-text { line-height: 1; }
 
 .tag-remove {
   cursor: pointer;
@@ -1888,9 +1859,7 @@ p {
   transition: color 0.12s ease;
 }
 
-.tag-remove:hover {
-  color: var(--ember);
-}
+.tag-remove:hover { color: var(--ember); }
 
 .tag-input-row {
   display: flex;
@@ -1936,17 +1905,13 @@ p {
   .dash-section-nav ul {
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 4px;
   }
 
-  .dash-section-nav__link {
-    flex-direction: row;
-    padding: 8px 12px;
-  }
-
-  .dash-hero__inner {
+  .dash-guild-heading {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
   }
 }
 
@@ -1955,12 +1920,13 @@ p {
     grid-template-columns: 1fr;
   }
 
-  .dash-user-card {
-    width: 100%;
+  .dash-user-strip {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .settings-card__head,
   .settings-card form {
-    padding: 18px 18px;
+    padding: 16px;
   }
 }
