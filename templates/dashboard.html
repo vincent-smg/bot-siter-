@@ -5,7 +5,7 @@
 <div class="page-head">
   <span class="page-head__eyebrow">Control Panel</span>
   <h1>Your <span class="accent">Dashboard</span></h1>
-  <p>Select a server to manage Anko's configurations and execute commands. Only servers where you possess Manage Server or Administrator permissions are shown.</p>
+  <p>Pick a server to manage Anko's settings. Only servers where Anko is present and you have Manage Server or Administrator permissions are shown.</p>
 </div>
 
 <section class="section" style="padding-top: 0;">
@@ -14,7 +14,7 @@
     {% if current_user %}
     <div class="dash-user-strip">
       <div class="dash-user-strip__left">
-        <img class="dash-user-strip__avatar" src="{{ current_user.avatar_url() }}" alt="{{ current_user.username }}">
+        <img class="dash-user-strip__avatar" src="{{ current_user.avatar_url() }}" alt="">
         <div>
           <div class="dash-user-strip__name">{{ current_user.display_name() }}</div>
           <div class="dash-user-strip__sub">@{{ current_user.username }}</div>
@@ -31,46 +31,45 @@
 
     {% if guilds %}
       <div class="dash-section-label">
-        <span>Active Server Directory</span>
+        <span>Managed Servers</span>
       </div>
       
-      <div class="server-management-card">
-        <div class="server-management-list">
-          {% for guild in guilds %}
-            {% set icon = guild | guild_icon_url %}
-            <div class="server-management-row">
-              <div class="server-management-row__meta">
-                {% if icon %}
-                  <img src="{{ icon }}" alt="{{ guild.name }}" class="server-icon-media">
-                {% else %}
-                  <div class="server-icon-placeholder">{{ guild.name[0] | upper }}</div>
-                {% endif %}
-                <div class="server-details">
-                  <span class="server-name">{{ guild.name }}</span>
-                  <span class="server-badge {{ 'badge--admin' if guild.permission_level == 'administrator' else 'badge--manage' }}">
-                    {{ "Administrator" if guild.permission_level == "administrator" else "Manage Server" }}
-                  </span>
-                </div>
-              </div>
-              <div class="server-management-row__actions">
-                <a class="btn btn--gold btn--sm" href="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
-                  Configure Bot
-                </a>
+      <!-- Unified Master Card Container for Server Rows -->
+      <div class="dashboard-list-card">
+        {% for guild in guilds %}
+          {% set icon = guild | guild_icon_url %}
+          <div class="server-list-row">
+            <div class="server-meta-side">
+              {% if icon %}
+                <img src="{{ icon }}" alt="{{ guild.name }}" class="server-avatar-img">
+              {% else %}
+                <div class="server-avatar-placeholder">{{ guild.name[0] | upper }}</div>
+              {% endif %}
+              <div class="server-info-text">
+                <span class="server-title-name">{{ guild.name }}</span>
+                <span class="server-role-badge {{ 'role--admin' if guild.permission_level == 'administrator' else 'role--manage' }}">
+                  {{ "Administrator" if guild.permission_level == "administrator" else "Manage Server" }}
+                </span>
               </div>
             </div>
-          {% endfor %}
-        </div>
+            <div>
+              <a class="btn btn--gold btn--sm" href="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
+                Configure
+              </a>
+            </div>
+          </div>
+        {% endfor %}
       </div>
 
     {% else %}
-      <div class="dashboard-empty-state">
-        <h2>No Active Servers Located</h2>
-        <p>We couldn't discover any servers matching your management privileges containing Anko. Invite the bot to get started.</p>
-        <div class="dashboard-empty-state__actions">
+      <div class="dashboard-empty-card">
+        <h2>No servers found</h2>
+        <p>We couldn't find any servers where you have Manage Server permissions and Anko is present. Invite Anko to your server first, then come back here.</p>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
           <a class="btn btn--gold btn--lg" href="{{ invite_url }}" target="_blank" rel="noopener">
-            Invite Anko Uguisu
+            Invite Anko
           </a>
-          <a class="btn btn--outline btn--lg" href="{{ url_for('index') }}">Return Home</a>
+          <a class="btn btn--outline btn--lg" href="{{ url_for('index') }}">Back to home</a>
         </div>
       </div>
     {% endif %}
