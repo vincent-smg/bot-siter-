@@ -3,7 +3,6 @@
 {% block title %}{{ guild.name }} Configuration | Anko Uguisu{% endblock %}
 
 {% block content %}
-<!-- Discord Minimalist Server Header -->
 <header class="page-head" style="background: linear-gradient(180deg, rgba(30, 31, 34, 0.8) 0%, rgba(22, 22, 24, 0) 100%); padding: 50px 0 30px 0;">
   <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
     <div class="dash-guild-heading" style="display: flex; align-items: center; gap: 24px;">
@@ -21,36 +20,33 @@
 </header>
 
 <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px 100px 20px;">
-  <!-- Two Column Layout: Sticky Left Nav & Right Scroll Area -->
   <div class="dash-guild-layout" style="display: grid; grid-template-columns: 260px 1fr; gap: 40px; align-items: start;">
     
-    <!-- Left Navigation Bar Module (Fixed Sticky position) -->
     <aside class="dash-section-nav" style="position: sticky; top: 100px; background: #2b2d31; border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.04);">
       <div class="dash-section-nav__label" style="font-size: 0.75rem; text-transform: uppercase; color: #9ca3af; font-weight: 700; letter-spacing: 1px; margin-bottom: 16px; padding-left: 8px;">System Sections</div>
       <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px;">
-        {% for section in config_schema %}
+        {% for section in sections %}
           <li>
-            <a class="dash-section-nav__link {% if loop.first %}is-active{% endif %}" href="#section-{{ section.key }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: #9ca3af; text-decoration: none; border-radius: 8px; font-size: 0.95rem; font-weight: 500; transition: all 0.2s ease;">
+            <a class="dash-section-nav__link {% if loop.first %}is-active{% endif %}" href="#section-{{ section.id }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: #9ca3af; text-decoration: none; border-radius: 8px; font-size: 0.95rem; font-weight: 500; transition: all 0.2s ease;">
               <div class="dash-section-nav__icon" style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; opacity: 0.7;">
                 <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 </svg>
               </div>
-              <span>{{ section.title }}</span>
+              <span>{{ section.label }}</span>
             </a>
           </li>
         {% endfor %}
       </ul>
     </aside>
 
-    <!-- Main Settings Form Panel -->
-    <form method="POST" action="{{ url_for('dashboard_guild_save', guild_id=guild.id) }}" style="position: relative; display: flex; flex-direction: column; gap: 32px;">
+    <form method="POST" action="{{ url_for('dashboard_guild', guild_id=guild.id) }}" style="position: relative; display: flex; flex-direction: column; gap: 32px;">
       
-      {% for section in config_schema %}
-        <section id="section-{{ section.key }}" class="settings-block" style="background: #2b2d31; border-radius: 14px; border: 1px solid rgba(255,255,255,0.04); padding: 32px; scroll-margin-top: 100px;">
+      <input type="hidden" name="section" value="general"> {% for section in sections %}
+        <section id="section-{{ section.id }}" class="settings-block" style="background: #2b2d31; border-radius: 14px; border: 1px solid rgba(255,255,255,0.04); padding: 32px; scroll-margin-top: 100px;">
           <div class="settings-block__head" style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 16px; margin-bottom: 28px;">
-            <h2 class="settings-block__title" style="font-size: 1.35rem; font-weight: 700; color: #ffffff; margin: 0 0 6px 0;">{{ section.title }}</h2>
+            <h2 class="settings-block__title" style="font-size: 1.35rem; font-weight: 700; color: #ffffff; margin: 0 0 6px 0;">{{ section.label }}</h2>
             {% if section.description %}
               <p class="settings-block__desc" style="color: #9ca3af; font-size: 0.875rem; margin: 0; line-height: 1.5;">{{ section.description }}</p>
             {% endif %}
@@ -60,7 +56,6 @@
             {% for field in section.fields %}
               <div class="form-field-wrapper" style="display: flex; flex-direction: column; gap: 8px;">
                 
-                <!-- Field Type Route Switch -->
                 {% if field.type == "toggle" %}
                   <label class="dashboard-toggle-switch" style="display: flex; align-items: center; justify-content: space-between; background: #1e1f22; padding: 16px 20px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255,255,255,0.02);">
                     <span class="toggle-switch-label-text" style="font-weight: 600; color: #ffffff; font-size: 0.95rem;">{{ field.label }}</span>
@@ -72,7 +67,7 @@
 
                 {% elif field.type == "textarea" %}
                   <label for="field-{{ field.key }}" style="font-weight: 600; color: #e0e1e5; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">{{ field.label }}</label>
-                  <textarea class="dashboard-native-textarea" id="field-{{ field.key }}" name="{{ field.key }}" placeholder="{{ field.placeholder or '' }}" style="background: #1e1f22; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #ffffff; padding: 14px; min-height: 120px; font-family: inherit; font-size: 0.95rem; resize: vertical; focus: outline-color: #f59e0b;">{{ settings.get(field.key, "") }}</textarea>
+                  <textarea class="dashboard-native-textarea" id="field-{{ field.key }}" name="{{ field.key }}" placeholder="{{ field.placeholder or '' }}" style="background: #1e1f22; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #ffffff; padding: 14px; min-height: 120px; font-family: inherit; font-size: 0.95rem; resize: vertical;">{{ settings.get(field.key, "") }}</textarea>
 
                 {% elif field.type == "list" %}
                   <label style="font-weight: 600; color: #e0e1e5; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">{{ field.label }}</label>
@@ -102,7 +97,6 @@
         </section>
       {% endfor %}
 
-      <!-- Floating Sticky Action Guard Notification Footer Bar -->
       <div class="settings-action-bar" style="position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 1160px; background: #111214; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 16px 32px rgba(0,0,0,0.5); border-radius: 12px; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; z-index: 100; box-sizing: border-box;">
         <span class="settings-action-bar__text" style="color: #e0e1e5; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 8px;">
           <svg style="width: 18px; height: 18px; color: #f59e0b;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -120,7 +114,6 @@
   </div>
 </div>
 
-<!-- Extra Layout Behavioral Micro-Overlays -->
 <style>
   .dash-section-nav__link.is-active {
     background: #404249 !important;
@@ -178,12 +171,25 @@
   }
 </style>
 
-<!-- Form Interaction Automation Engine Script -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   // Navigation Track System Highlight Follower
   const links = document.querySelectorAll(".dash-section-nav__link");
   const sections = document.querySelectorAll(".settings-block");
+
+  // Dynamically update form submit parameters when sections are navigated
+  sections.forEach(section => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting) {
+          const sId = section.getAttribute("id").replace("section-", "");
+          const hiddenInput = document.querySelector('input[name="section"]');
+          if(hiddenInput) hiddenInput.value = sId;
+        }
+      });
+    }, { threshold: 0.2, rootMargin: "-100px 0px -40% 0px" });
+    observer.observe(section);
+  });
 
   window.addEventListener("scroll", function() {
     let current = "";
@@ -201,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
 
-  // Array Tag Handler Pool Scripting (Fixed .forEeach syntax typo bug!)
+  // Array Tag Handler Pool Scripting
   document.querySelectorAll(".tag-array-container").forEach(container => {
     const hiddenTextarea = document.getElementById("field-" + container.getAttribute("data-field-key"));
     const pool = container.querySelector(".tag-array-pool");
