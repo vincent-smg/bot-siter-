@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 import requests
@@ -30,6 +31,13 @@ from data.dashboard_settings import DASHBOARD_SECTIONS
 from data.premium import PREMIUM_PERKS, PREMIUM_TIERS
 from data.updates import UPDATES
 from models import GuildSettings, User, db
+from config import Config # Import the Config class from your file
+
+app = Flask(__name__)
+app.config.from_object(Config) # Load all settings from the Config class
+
+# Now apply the middleware
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATUS_FILE = os.path.join(BASE_DIR, "data", "bot_status.json")
