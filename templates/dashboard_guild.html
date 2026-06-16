@@ -115,59 +115,90 @@
 </div>
 
 <style>
+  /* Base structural container changes to override cool grays */
+  .dash-section-nav {
+    background: #261a12 !important; /* Warm panel brown */
+    border: 1px solid rgba(226, 167, 111, 0.08) !important;
+  }
+  
+  .settings-block {
+    background: #261a12 !important; /* Warm panel brown */
+    border: 1px solid rgba(226, 167, 111, 0.08) !important;
+  }
+
+  /* Form Inputs (Deeper background contrast) */
+  .dashboard-native-input, 
+  .dashboard-native-textarea,
+  .tag-array-container,
+  .dashboard-toggle-switch {
+    background: #1c120c !important; /* Base deep background color */
+    border: 1px solid rgba(226, 167, 111, 0.15) !important;
+    color: #fcefe3 !important; /* Off-white warm text */
+  }
+
+  /* Text elements mapping */
+  .settings-block__title, h1, h2 {
+    color: #fcefe3 !important;
+  }
+  
+  .settings-block__desc, .field-help-hint, .dash-section-nav__label {
+    color: #a08a7c !important; /* Muted sepia text */
+  }
+
+  /* Left Navigation Interaction Details */
+  .dash-section-nav__link {
+    color: #a08a7c !important;
+  }
+  
   .dash-section-nav__link.is-active {
-    background: #404249 !important;
-    color: #ffffff !important;
+    background: #38271b !important; /* Distinct selected brown layer */
+    color: #f3b982 !important; /* Warm theme gold text */
   }
+  
   .dash-section-nav__link.is-active .dash-section-nav__icon {
+    color: #f3b982 !important;
     opacity: 1 !important;
-    color: #f59e0b !important;
   }
+  
   .dash-section-nav__link:hover:not(.is-active) {
-    background: rgba(255,255,255,0.02) !important;
-    color: #ffffff !important;
+    background: rgba(243, 185, 130, 0.04) !important;
+    color: #fcefe3 !important;
   }
-  .toggle-input:checked + .toggle-switch-track {
-    background-color: #22c55e !important;
+
+  /* Buttons & Save Guards */
+  .settings-action-bar {
+    background: #160e0a !important; /* Super dark footer anchor */
+    border: 1px solid rgba(243, 185, 130, 0.1) !important;
   }
-  .toggle-input:checked + .toggle-switch-track::after {
-    transform: translateX(20px);
+  
+  .btn--gold {
+    background: #e2a76f !important; /* Signature button gold */
+    color: #1c120c !important; /* Dark text inside button */
   }
-  .toggle-switch-track::after {
-    content: '';
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background-color: white;
-    top: 3px;
-    left: 3px;
-    transition: .2s;
+  
+  .btn--gold:hover {
+    background: #f3b982 !important;
   }
-  .tag-array-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: #2b2d31;
-    color: #ffffff;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    border: 1px solid rgba(255,255,255,0.05);
+
+  .tag-add-btn {
+    border-color: #e2a76f !important;
+    color: #e2a76f !important;
   }
-  .tag-array-pill-remove {
-    cursor: pointer;
-    color: #ef4444;
-    font-weight: 700;
-    font-size: 1.1rem;
-    line-height: 1;
-  }
-  .tag-array-pill-remove:hover {
-    color: #f87171;
-  }
+  
   .tag-add-btn:hover {
-    background: #f59e0b !important;
-    color: #1e1f22 !important;
+    background: #e2a76f !important;
+    color: #1c120c !important;
+  }
+
+  .tag-array-pill {
+    background: #38271b !important;
+    border: 1px solid rgba(226, 167, 111, 0.15) !important;
+    color: #fcefe3 !important;
+  }
+
+  /* Toggles matching your theme green or gold */
+  .toggle-input:checked + .toggle-switch-track {
+    background-color: #e2a76f !important; /* Or use a soft sage green if preferred */
   }
 </style>
 
