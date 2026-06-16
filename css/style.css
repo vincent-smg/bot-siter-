@@ -308,10 +308,24 @@ p {
   font-size: 1rem;
 }
 
+/* FIX 1: Icons inside buttons — 16px default, 18px for large buttons */
 .btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.btn--lg svg {
   width: 18px;
   height: 18px;
-  flex-shrink: 0;
+}
+
+/* Icon containers — explicit sizes per context */
+.feature-card .icon svg,
+.settings-card__icon svg,
+.dashboard-empty__icon svg {
+  width: 20px;
+  height: 20px;
 }
 
 /* =====================================================================
@@ -1322,6 +1336,7 @@ p {
 }
 
 .dashboard-server-card {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -1352,10 +1367,6 @@ p {
   opacity: 0;
   transition: opacity 0.15s ease;
   pointer-events: none;
-}
-
-.dashboard-server-card {
-  position: relative;
 }
 
 .dashboard-server-card::before {
@@ -1867,6 +1878,7 @@ p {
   align-items: center;
 }
 
+/* FIX 2: tag-input-field now matches .field input[type="text"] exactly */
 .tag-input-field {
   flex: 1;
   background: var(--ink);
@@ -1875,8 +1887,9 @@ p {
   color: var(--text);
   font-family: var(--font-body);
   font-size: 0.92rem;
-  padding: 8px 12px;
+  padding: 10px 14px;
   transition: border-color 0.15s ease;
+  width: 100%;
 }
 
 .tag-input-field:focus {
