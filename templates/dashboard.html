@@ -1,38 +1,33 @@
 {% extends "base.html" %}
-
 {% block title %}Dashboard — Anko Uguisu{% endblock %}
-
 {% block content %}
 
-<header class="dash-hero">
-  <div class="dash-hero__glow"></div>
-  <div class="container dash-hero__inner">
-    <div class="dash-hero__text">
-      <span class="page-head__eyebrow">Control Panel</span>
-      <h1>Your <span class="accent">Dashboard</span></h1>
-      <p>Pick a server to manage Anko's settings. Only servers where Anko is present and you have Manage Server or Administrator permissions are shown.</p>
-    </div>
+<div class="page-head">
+  <span class="page-head__eyebrow">Control Panel</span>
+  <h1>Your <span class="accent">Dashboard</span></h1>
+  <p>Pick a server to manage Anko's settings. Only servers where Anko is present and you have Manage Server or Administrator permissions are shown.</p>
+</div>
+
+<section class="section" style="padding-top: 0;">
+  <div class="container">
 
     {% if current_user %}
-    <div class="dash-user-card">
-      <img class="dash-user-card__avatar" src="{{ current_user.avatar_url() }}" alt="">
-      <div class="dash-user-card__info">
-        <div class="dash-user-card__name">{{ current_user.display_name() }}</div>
-        <div class="dash-user-card__sub">@{{ current_user.username }}</div>
+    <div class="dash-user-strip">
+      <div class="dash-user-strip__left">
+        <img class="dash-user-strip__avatar" src="{{ current_user.avatar_url() }}" alt="">
+        <div>
+          <div class="dash-user-strip__name">{{ current_user.display_name() }}</div>
+          <div class="dash-user-strip__sub">@{{ current_user.username }}</div>
+        </div>
       </div>
       {% if guilds %}
-      <div class="dash-user-card__stat">
-        <span class="dash-user-card__stat-num">{{ guilds | length }}</span>
-        <span class="dash-user-card__stat-label">server{{ 's' if guilds | length != 1 }}</span>
+      <div class="dash-user-strip__right">
+        <span class="dash-user-strip__count">{{ guilds | length }}</span>
+        <span class="dash-user-strip__count-label">server{{ 's' if guilds | length != 1 }}</span>
       </div>
       {% endif %}
     </div>
     {% endif %}
-  </div>
-</header>
-
-<section class="section" style="padding-top: 32px;">
-  <div class="container">
 
     {% if guilds %}
       <div class="dash-section-label">
@@ -58,7 +53,6 @@
           </a>
         {% endfor %}
       </div>
-
     {% else %}
       <div class="dashboard-empty">
         <div class="dashboard-empty__icon">
