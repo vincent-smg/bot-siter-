@@ -1995,3 +1995,171 @@ p {
   background: var(--line);
   margin: 0 28px;
 }
+/* Server Overview Card Layout */
+.server-management-card {
+  background: #18191c;
+  border: 1px solid #2f3136;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.server-management-list {
+  display: flex;
+  flex-direction: column;
+}
+.server-management-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #2f3136;
+  transition: background 0.2s ease;
+}
+.server-management-row:last-child {
+  border-bottom: none;
+}
+.server-management-row:hover {
+  background: #202225;
+}
+.server-management-row__meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.server-icon-media, .server-icon-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+.server-icon-placeholder {
+  background: #36393f;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+.server-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.server-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+.server-badge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  width: max-content;
+  font-weight: 600;
+}
+.badge--admin { background: rgba(240, 71, 71, 0.15); color: #f04747; }
+.badge--manage { background: rgba(250, 166, 26, 0.15); color: #faa61a; }
+
+/* Dashboard Inputs Design Modernization */
+.custom-input-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #b9bbbe;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.custom-text-input-element, .custom-textarea-element {
+  width: 100%;
+  background: #202225;
+  border: 1px solid #202225;
+  border-radius: 6px;
+  padding: 12px 16px;
+  color: #dcddde;
+  font-size: 1rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+.custom-text-input-element:focus, .custom-textarea-element:focus {
+  outline: none;
+  border-color: #faa61a;
+  background: #18191c;
+}
+.custom-textarea-element {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Custom CSS Toggle Switches */
+.custom-switch-label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  gap: 12px;
+}
+.custom-switch-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.custom-switch-slider {
+  width: 48px;
+  height: 26px;
+  background-color: #4f545c;
+  border-radius: 34px;
+  position: relative;
+  transition: background-color 0.2s;
+}
+.custom-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.custom-switch-input:checked + .custom-switch-slider {
+  background-color: #43b581;
+}
+.custom-switch-input:checked + .custom-switch-slider:before {
+  transform: translateX(22px);
+}
+.custom-switch-text {
+  color: #fff;
+  font-weight: 500;
+}
+
+/* Clean UI Tag Pills (Lists Layout) */
+.tag-pool-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.ui-pill-tag {
+  display: inline-flex;
+  align-items: center;
+  background: #2f3136;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  gap: 6px;
+}
+.ui-pill-tag__remove {
+  cursor: pointer;
+  color: #72767d;
+  font-weight: bold;
+}
+.ui-pill-tag__remove:hover {
+  color: #f04747;
+}
+.tag-input-action-bar {
+  display: flex;
+  gap: 10px;
+}
