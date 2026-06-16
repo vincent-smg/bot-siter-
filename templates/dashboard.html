@@ -1,78 +1,85 @@
 {% extends "base.html" %}
-{% block title %}Dashboard — Anko Uguisu{% endblock %}
 
 {% block content %}
-<div class="page-head">
-  <span class="page-head__eyebrow">Control Panel</span>
-  <h1>Your <span class="accent">Dashboard</span></h1>
-  <p>Pick a server to manage Anko's settings. Only servers where Anko is present and you have Manage Server or Administrator permissions are shown.</p>
-</div>
-
-<section class="section" style="padding-top: 0;">
+<header class="page-head">
   <div class="container">
+    <span class="page-head__eyebrow">Control Center</span>
+    <h1>Your Dashboards</h1>
+    <p>Select a managed server instance from the array below to modify configurations and channel parameters.</p>
+  </div>
+</header>
 
-    {% if current_user %}
+<main class="section" style="padding-top: 0;">
+  <div class="container">
+    
+    <!-- User Profile Banner Row -->
     <div class="dash-user-strip">
       <div class="dash-user-strip__left">
-        <img class="dash-user-strip__avatar" src="{{ current_user.avatar_url() }}" alt="">
+        {% if user.avatar %}
+          <img class="dash-user-strip__avatar" src="https://cdn.discordapp.com/avatars/{{ user.id }}/{{ user.avatar }}.png?size=80" alt="{{ user.username }}">
+        {% else %}
+          <div class="dash-user-strip__avatar dashboard-server-icon" style="border-radius: 50%;">{{ user.username[0] | upper }}</div>
+        {% endif %}
         <div>
-          <div class="dash-user-strip__name">{{ current_user.display_name() }}</div>
-          <div class="dash-user-strip__sub">@{{ current_user.username }}</div>
+          <div class="dash-user-strip__name">{{ user.username }}<span style="color: var(--text-muted); font-weight: 400;">#{{ user.discriminator }}</span></div>
+          <div class="dash-user-strip__sub">Authenticated via Discord Application Authorization</div>
         </div>
       </div>
-      {% if guilds %}
       <div class="dash-user-strip__right">
         <span class="dash-user-strip__count">{{ guilds | length }}</span>
-        <span class="dash-user-strip__count-label">server{{ 's' if guilds | length != 1 }}</span>
+        <span class="dash-user-strip__count-label">Available Servers</span>
       </div>
-      {% endif %}
     </div>
-    {% endif %}
 
-    {% if guilds %}
-      <div class="dash-section-label" style="margin-top: 32px; color: #a39284; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">
-        <span>Managed Servers</span>
-      </div>
-      
-      <div class="dashboard-list-card">
+    <!-- Section Heading Grid Control -->
+    <div class="dash-section-label">
+      <span>Managed Servers</span>
+      <span class="dash-section-count">{{ guilds | length }}</span>
+    </div>
+
+    {% if guilds | length > 0 %}
+      <div class="dashboard-grid">
         {% for guild in guilds %}
-          {% set icon = guild | guild_icon_url %}
-          <div class="server-list-row">
-            <div class="server-meta-side">
-              {% if icon %}
-                <img src="{{ icon }}" alt="{{ guild.name }}" class="server-avatar-img">
+          <a class="dashboard-server-card" href="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
+            {% if guild.icon %}
+              <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=96" alt="{{ guild.name }}">
+            {% else %}
+              <div class="dashboard-server-icon">{{ guild.name[0] | upper }}</div>
+            {% endif %}
+            
+            <div class="info">
+              <div class="name">{{ guild.name }}</div>
+              {% if guild.owner %}
+                <span class="dashboard-badge">Owner</span>
               {% else %}
-                <div class="server-avatar-placeholder">{{ guild.name[0] | upper }}</div>
+                <span class="dashboard-badge is-admin">Admin</span>
               {% endif %}
-              <div class="server-info-text">
-                <span class="server-title-name">{{ guild.name }}</span>
-                <span class="server-role-badge {{ 'role--admin' if guild.permission_level == 'administrator' else 'role--manage' }}">
-                  {{ "Administrator" if guild.permission_level == "administrator" else "Manage Server" }}
-                </span>
-              </div>
             </div>
-            <div>
-              <a class="btn btn--gold btn--sm" href="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
-                Configure
-              </a>
-            </div>
-          </div>
+            
+            <svg class="dashboard-server-card__arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </a>
         {% endfor %}
       </div>
-
     {% else %}
-      <div class="dashboard-empty-card">
-        <h2>No servers found</h2>
-        <p style="color: #a39284; margin-bottom: 24px;">We couldn't find any servers where you have Manage Server permissions and Anko is present. Invite Anko to your server first, then come back here.</p>
-        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-          <a class="btn btn--gold btn--lg" href="{{ invite_url }}" target="_blank" rel="noopener">
-            Invite Anko
+      <div class="dashboard-empty">
+        <div class="dashboard-empty__icon">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"></path>
+          </svg>
+        </div>
+        <h2>No Guilds Available</h2>
+        <p>You do not currently possess administrative or management permissions on any servers utilizing the active runtime instance.</p>
+        <div style="margin-top: 24px;">
+          <a href="#" class="btn btn--gold">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
+            Invite Bot Instance
           </a>
-          <a class="btn btn--outline btn--lg" href="{{ url_for('index') }}">Back to home</a>
         </div>
       </div>
     {% endif %}
 
   </div>
-</section>
+</main>
 {% endblock %}
