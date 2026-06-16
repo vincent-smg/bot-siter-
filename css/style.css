@@ -308,7 +308,6 @@ p {
   font-size: 1rem;
 }
 
-/* FIX 1: Icons inside buttons — 16px default, 18px for large buttons */
 .btn svg {
   width: 16px;
   height: 16px;
@@ -320,7 +319,6 @@ p {
   height: 18px;
 }
 
-/* Icon containers — explicit sizes per context */
 .feature-card .icon svg,
 .settings-card__icon svg,
 .dashboard-empty__icon svg {
@@ -603,8 +601,6 @@ p {
   color: var(--text-muted);
   max-width: 460px;
 }
-
-/* feature grid on index */
 
 .feature-grid {
   display: grid;
@@ -1195,10 +1191,6 @@ p {
   transform: rotate(45deg);
 }
 
-/* =====================================================================
-   Premium badges on the commands page
-   ===================================================================== */
-
 .command-card .premium-badge {
   display: inline-flex;
   align-items: center;
@@ -1221,13 +1213,9 @@ p {
    Utility colours
    ===================================================================== */
 
-.accent        { color: var(--gold); }
-.color-gold    { color: var(--gold); }
-.color-ember   { color: var(--ember); }
-
-/* =====================================================================
-   Button extras
-   ===================================================================== */
+.accent         { color: var(--gold); }
+.color-gold     { color: var(--gold); }
+.color-ember    { color: var(--ember); }
 
 .btn--sm {
   padding: 6px 14px;
@@ -1356,7 +1344,6 @@ p {
   background: var(--ink-raised);
 }
 
-/* corner accent marks on hover, matching .command-card */
 .dashboard-server-card::before,
 .dashboard-server-card::after {
   content: "";
@@ -1388,7 +1375,6 @@ p {
   opacity: 1;
 }
 
-/* guild icon — image */
 .dashboard-server-card > img {
   width: 36px;
   height: 36px;
@@ -1398,7 +1384,6 @@ p {
   border: 1px solid var(--line);
 }
 
-/* guild icon — placeholder letter */
 .dashboard-server-icon {
   width: 36px;
   height: 36px;
@@ -1630,1164 +1615,136 @@ p {
   border-radius: 999px;
   background: var(--ember);
   margin-left: auto;
-  flex-shrink: 0;
 }
 
 /* =====================================================================
-   Settings cards
-   ===================================================================== */
-
-.dash-settings-col {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  min-width: 0;
-}
-
-.settings-card {
-  background: var(--ink-soft);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  overflow: hidden;
-  scroll-margin-top: calc(var(--nav-height) + 24px);
-  transition: border-color 0.2s ease;
-}
-
-.settings-card:target {
-  border-color: rgba(216, 168, 92, 0.4);
-}
-
-.settings-card__head {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 22px 24px;
-  border-bottom: 1px solid var(--line);
-}
-
-.settings-card__icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 9px;
-  background: rgba(216, 168, 92, 0.1);
-  color: var(--gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.settings-card__icon svg {
-  width: 18px;
-  height: 18px;
-}
-
-.settings-card__head h2 {
-  font-size: 1.05rem;
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.settings-card__head p {
-  color: var(--text-muted);
-  font-size: 0.88rem;
-}
-
-.perm-tag {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 0.63rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: rgba(226, 117, 74, 0.12);
-  color: var(--ember);
-  border: 1px solid rgba(226, 117, 74, 0.22);
-  vertical-align: middle;
-}
-
-.settings-card form {
-  padding: 22px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.settings-card__footer {
-  padding-top: 8px;
-  border-top: 1px solid var(--line);
-  margin-top: 4px;
-}
-
-/* =====================================================================
-   Form fields
-   ===================================================================== */
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.field label {
-  font-size: 0.86rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.field input[type="text"],
-.field textarea {
-  background: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 0.92rem;
-  padding: 10px 14px;
-  transition: border-color 0.15s ease;
-  width: 100%;
-  resize: vertical;
-}
-
-.field input[type="text"]:focus,
-.field textarea:focus {
-  outline: none;
-  border-color: var(--gold);
-}
-
-.field input[type="text"]::placeholder,
-.field textarea::placeholder {
-  color: var(--text-muted);
-  opacity: 0.6;
-}
-
-.field textarea {
-  min-height: 90px;
-}
-
-.help {
-  font-size: 0.81rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-/* =====================================================================
-   Toggle switch
-   ===================================================================== */
-
-.toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  font-size: 0.92rem;
-  color: var(--text);
-  user-select: none;
-}
-
-.toggle input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle .track {
-  width: 42px;
-  height: 23px;
-  border-radius: 999px;
-  background: var(--ink);
-  border: 1px solid var(--line);
-  position: relative;
-  flex-shrink: 0;
-  transition: background-color 0.18s ease, border-color 0.18s ease;
-}
-
-.toggle .track::after {
-  content: "";
-  position: absolute;
-  left: 3px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 15px;
-  height: 15px;
-  border-radius: 999px;
-  background: var(--text-muted);
-  transition: left 0.18s ease, background-color 0.18s ease;
-}
-
-.toggle input:checked + .track {
-  background: rgba(147, 160, 107, 0.22);
-  border-color: var(--sage);
-}
-
-.toggle input:checked + .track::after {
-  left: calc(100% - 18px);
-  background: var(--sage);
-}
-
-/* =====================================================================
-   Tag / word-list input
-   ===================================================================== */
-
-.tag-input-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  min-height: 30px;
-}
-
-.tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  background: rgba(216, 168, 92, 0.11);
-  border: 1px solid rgba(216, 168, 92, 0.22);
-  border-radius: 999px;
-  font-size: 0.83rem;
-  color: var(--gold-soft);
-}
-
-.tag-text { line-height: 1; }
-
-.tag-remove {
-  cursor: pointer;
-  color: var(--text-muted);
-  font-size: 1rem;
-  line-height: 1;
-  transition: color 0.12s ease;
-}
-
-.tag-remove:hover { color: var(--ember); }
-
-.tag-input-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-/* FIX 2: tag-input-field now matches .field input[type="text"] exactly */
-.tag-input-field {
-  flex: 1;
-  background: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 0.92rem;
-  padding: 10px 14px;
-  transition: border-color 0.15s ease;
-  width: 100%;
-}
-
-.tag-input-field:focus {
-  outline: none;
-  border-color: var(--gold);
-}
-
-.tag-input-field::placeholder {
-  color: var(--text-muted);
-  opacity: 0.6;
-}
-
-/* =====================================================================
-   Responsive — dashboard
-   ===================================================================== */
-
-@media (max-width: 860px) {
-  .dash-guild-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .dash-section-nav {
-    position: static;
-  }
-
-  .dash-section-nav ul {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-
-  .dash-guild-heading {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-}
-
-@media (max-width: 640px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dash-user-strip {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .settings-card__head,
-  .settings-card form {
-    padding: 16px;
-  }
-}
-/* =====================================================================
-   Guild dashboard — unified settings block
+   Guild dashboard — settings cards & blocks
    ===================================================================== */
 
 .settings-block {
   background: var(--ink-soft);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  overflow: hidden;
+  padding: 32px;
+  margin-bottom: 24px;
 }
 
-.settings-block__section {
-  padding: 28px;
-  scroll-margin-top: calc(var(--nav-height) + 24px);
+.settings-block__head {
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 16px;
 }
 
-.settings-block__section-head {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  margin-bottom: 22px;
+.settings-block__title {
+  font-size: 1.25rem;
+  color: var(--gold-soft);
+  margin-bottom: 6px;
 }
 
-.settings-block__section-head h2 {
-  font-size: 1.05rem;
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.settings-block__section-head p {
-  color: var(--text-muted);
+.settings-block__desc {
   font-size: 0.88rem;
+  color: var(--text-muted);
 }
 
 .settings-block__fields {
   display: flex;
   flex-direction: column;
-  gap: 18px;
 }
 
-.settings-block__footer {
-  padding-top: 18px;
-}
-
-.settings-block__divider {
-  height: 1px;
-  background: var(--line);
-  margin: 0 28px;
-}
-/* Server Overview Card Layout */
-.server-management-card {
-  background: #18191c;
-  border: 1px solid #2f3136;
-  border-radius: 12px;
-  overflow: hidden;
-}
-.server-management-list {
-  display: flex;
-  flex-direction: column;
-}
-.server-management-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.settings-action-bar {
+  position: sticky;
+  bottom: 24px;
+  background: rgba(36, 28, 22, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   padding: 16px 24px;
-  border-bottom: 1px solid #2f3136;
-  transition: background 0.2s ease;
-}
-.server-management-row:last-child {
-  border-bottom: none;
-}
-.server-management-row:hover {
-  background: #202225;
-}
-.server-management-row__meta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.server-icon-media, .server-icon-placeholder {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  object-fit: cover;
-}
-.server-icon-placeholder {
-  background: #36393f;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 1.2rem;
-}
-.server-details {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.server-name {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #fff;
-}
-.server-badge {
-  font-size: 0.75rem;
-  padding: 2px 8px;
-  border-radius: 4px;
-  width: max-content;
-  font-weight: 600;
-}
-.badge--admin { background: rgba(240, 71, 71, 0.15); color: #f04747; }
-.badge--manage { background: rgba(250, 166, 26, 0.15); color: #faa61a; }
-
-/* Dashboard Inputs Design Modernization */
-.custom-input-label {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #b9bbbe;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.custom-text-input-element, .custom-textarea-element {
-  width: 100%;
-  background: #202225;
-  border: 1px solid #202225;
-  border-radius: 6px;
-  padding: 12px 16px;
-  color: #dcddde;
-  font-size: 1rem;
-  transition: border-color 0.2s, background 0.2s;
-}
-.custom-text-input-element:focus, .custom-textarea-element:focus {
-  outline: none;
-  border-color: #faa61a;
-  background: #18191c;
-}
-.custom-textarea-element {
-  min-height: 120px;
-  resize: vertical;
-}
-
-/* Custom CSS Toggle Switches */
-.custom-switch-label {
-  display: inline-flex;
-  align-items: center;
-  cursor: pointer;
-  user-select: none;
-  gap: 12px;
-}
-.custom-switch-input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-.custom-switch-slider {
-  width: 48px;
-  height: 26px;
-  background-color: #4f545c;
-  border-radius: 34px;
-  position: relative;
-  transition: background-color 0.2s;
-}
-.custom-switch-slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  border-radius: 50%;
-  transition: transform 0.2s;
-}
-.custom-switch-input:checked + .custom-switch-slider {
-  background-color: #43b581;
-}
-.custom-switch-input:checked + .custom-switch-slider:before {
-  transform: translateX(22px);
-}
-.custom-switch-text {
-  color: #fff;
-  font-weight: 500;
-}
-
-/* Clean UI Tag Pills (Lists Layout) */
-.tag-pool-display {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.ui-pill-tag {
-  display: inline-flex;
-  align-items: center;
-  background: #2f3136;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 0.85rem;
-  gap: 6px;
-}
-.ui-pill-tag__remove {
-  cursor: pointer;
-  color: #72767d;
-  font-weight: bold;
-}
-.ui-pill-tag__remove:hover {
-  color: #f04747;
-}
-.tag-input-action-bar {
-  display: flex;
-  gap: 10px;
-}
-/* ==========================================================================
-   ANKO UGUISU DASHBOARD SYSTEM STYLES
-   ========================================================================== */
-
-/* 1. Dashboard Server List Overview (dashboard.html) */
-.dashboard-list-card {
-  background-color: var(--ink-soft);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-  margin-top: 24px;
-}
-
-.server-list-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 24px;
-  border-bottom: 1px solid var(--line);
-  transition: background-color 0.2s ease;
+  gap: 20px;
+  margin-top: 32px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+  z-index: 10;
 }
 
-.server-list-row:last-child {
-  border-bottom: none;
-}
-
-.server-list-row:hover {
-  background-color: var(--ink-raised);
-}
-
-.server-meta-side {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.server-avatar-img, 
-.server-avatar-placeholder {
-  width: 46px;
-  height: 46px;
-  border-radius: 10px;
-  object-fit: cover;
-  border: 1px solid var(--line);
-}
-
-.server-avatar-placeholder {
-  background-color: var(--ink-raised);
-  color: var(--gold-soft);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.2rem;
-}
-
-.server-info-text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.server-title-name {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-/* Dashboard Management Badges */
-.server-role-badge {
-  font-size: 0.75rem;
-  font-family: var(--font-mono);
-  padding: 3px 10px;
-  border-radius: 999px;
-  width: max-content;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.role--admin {
-  background: rgba(226, 117, 74, 0.15);
-  color: var(--ember);
-  border: 1px solid rgba(226, 117, 74, 0.3);
-}
-
-.role--manage {
-  background: rgba(216, 168, 92, 0.15);
-  color: var(--gold);
-  border: 1px solid rgba(216, 168, 92, 0.3);
-}
-
-.dashboard-empty-card {
-  background-color: var(--ink-soft);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 48px;
-  text-align: center;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-}
-
-.dashboard-empty-card h2 {
-  margin-bottom: 12px;
-}
-
-.dashboard-empty-card p {
+.settings-action-bar__text {
+  font-size: 0.9rem;
   color: var(--text-muted);
-  margin-bottom: 24px;
 }
 
-
-/* 2. Guild Settings View (dashboard_guild.html) */
-.settings-module-card {
-  background-color: var(--ink-soft);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 32px;
-  margin-bottom: 24px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
-}
-
-.settings-module-card:last-child {
-  margin-bottom: 0;
-}
-
-.settings-card-head {
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--line);
-}
-
-.settings-card-head h2 {
-  font-size: 1.4rem;
-  color: var(--gold-soft);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.admin-only-pill {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  background-color: rgba(226, 117, 74, 0.15);
-  color: var(--ember);
-  border: 1px solid rgba(226, 117, 74, 0.3);
-  padding: 2px 8px;
-  border-radius: var(--radius-sm);
-  text-transform: uppercase;
-}
-
-.settings-card-head p {
-  color: var(--text-muted);
-  font-size: 0.92rem;
-  margin-top: 6px;
-}
-
-
-/* 3. Custom Form Fields & Inputs Layout */
-.form-field-wrapper {
-  margin-bottom: 20px;
-}
-
-.form-field-wrapper:last-child {
-  margin-bottom: 0;
-}
-
-.form-field-wrapper label {
-  display: block;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 8px;
-}
-
-.dashboard-native-input, 
-.dashboard-native-textarea {
-  width: 100%;
-  background-color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.dashboard-native-input:focus, 
-.dashboard-native-textarea:focus {
-  outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(216, 168, 92, 0.15);
-}
-
-.dashboard-native-textarea {
-  min-height: 110px;
-  resize: vertical;
-}
-
-.field-help-hint {
-  display: block;
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  margin-top: 6px;
-}
-
-
-/* 4. Custom Switch Toggles */
-.dashboard-toggle-switch {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  user-select: none;
-  margin-top: 4px;
-}
-
-.dashboard-toggle-switch input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-switch-track {
-  width: 46px;
-  height: 24px;
-  background-color: var(--ink-raised);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  position: relative;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.toggle-switch-track::before {
-  content: "";
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  left: 3px;
-  bottom: 3px;
-  background-color: var(--text-muted);
-  border-radius: 50%;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.dashboard-toggle-switch input:checked + .toggle-switch-track {
-  background-color: rgba(147, 160, 107, 0.2);
-  border-color: var(--sage);
-}
-
-.dashboard-toggle-switch input:checked + .toggle-switch-track::before {
-  transform: translateX(22px);
-  background-color: var(--sage);
-}
-
-.toggle-switch-label-text {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--text);
-}
-
-
-/* 5. Array Tag Pools Controls */
-.tag-array-container {
-  background-color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  padding: 16px;
-}
-
-.tag-array-pool {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.tag-array-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background-color: var(--ink-raised);
-  border: 1px solid var(--line);
-  color: var(--text);
-  padding: 4px 12px;
-  border-radius: 999px;
-  font-size: 0.85rem;
-}
-
-.tag-array-pill-remove {
-  cursor: pointer;
-  color: var(--text-muted);
-  font-weight: bold;
-}
-
-.tag-array-pill-remove:hover {
-  color: var(--ember);
-}
-
-.tag-array-action-row {
-  display: flex;
-  gap: 10px;
-}
-
-.tag-array-action-row .dashboard-native-input {
-  flex: 1;
-}
 /* ==========================================================================
-   ANKO UGUISU FIXED DASHBOARD SYSTEM STYLES (HARDCODED FALLBACKS)
+   PREMIUM DASHBOARD FORM CONTROLS & INPUTS
    ========================================================================== */
 
-/* Layout Structural Containers */
-.dash-guild-layout {
-  display: grid !important;
-  grid-template-columns: 240px 1fr !important;
-  gap: 32px !important;
-  align-items: start !important;
-  margin-top: 32px !important;
-}
-
-@media (max-width: 768px) {
-  .dash-guild-layout {
-    grid-template-columns: 1fr !important;
-    gap: 24px !important;
-  }
-}
-
-/* User Strip Block Fixes */
-.dash-user-strip {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  background-color: #1a1512 !important;
-  border: 1px solid #2e241c !important;
-  padding: 16px 24px !important;
-  border-radius: 8px !important;
-  margin-bottom: 24px !important;
-}
-.dash-user-strip__left {
-  display: flex !important;
-  align-items: center !important;
-  gap: 16px !important;
-}
-.dash-user-strip__avatar {
-  width: 48px !important;
-  height: 48px !important;
-  border-radius: 50% !important;
-  border: 1px solid #d8a85c !important;
-}
-.dash-user-strip__name {
-  font-size: 1.1rem !important;
-  font-weight: 600 !important;
-  color: #ffffff !important;
-}
-.dash-user-strip__sub {
-  font-size: 0.85rem !important;
-  color: #a39284 !important;
-}
-.dash-user-strip__right {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-end !important;
-}
-.dash-user-strip__count {
-  font-size: 1.4rem !important;
-  font-weight: 700 !important;
-  color: #d8a85c !important;
-}
-.dash-user-strip__count-label {
-  font-size: 0.75rem !important;
-  color: #a39284 !important;
-  text-transform: uppercase !important;
-}
-
-/* Sidebar Navigation Panel Layout */
-.dash-section-nav {
-  background-color: #14100e !important;
-  border: 1px solid #261e17 !important;
-  border-radius: 8px !important;
-  padding: 16px !important;
-}
-.dash-section-nav__label {
-  font-size: 0.75rem !important;
-  font-weight: 700 !important;
-  color: #a39284 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.05em !important;
-  margin-bottom: 12px !important;
-  padding-left: 8px !important;
-}
-.dash-section-nav ul {
-  list-style: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
-}
-.dash-section-nav__link {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  padding: 10px 12px !important;
-  color: #c9b9ae !important;
-  text-decoration: none !important;
-  font-size: 0.95rem !important;
-  border-radius: 6px !important;
-  transition: all 0.2s ease;
-}
-.dash-section-nav__link:hover {
-  background-color: #1e1713 !important;
-  color: #ffffff !important;
-}
-.dash-section-nav__link.is-active {
-  background-color: #2e241c !important;
-  color: #d8a85c !important;
-  font-weight: 600 !important;
-}
-.dash-section-nav__admin-dot {
-  width: 6px !important;
-  height: 6px !important;
-  background-color: #e2754a !important;
-  border-radius: 50% !important;
-}
-
-/* Dashboard Server List Overview (dashboard.html) */
-.dashboard-list-card {
-  background-color: #14100e !important;
-  border: 1px solid #261e17 !important;
-  border-radius: 8px !important;
-  overflow: hidden !important;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4) !important;
-  margin-top: 16px !important;
-  width: 100% !important;
-}
-
-.server-list-row {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  padding: 16px 24px !important;
-  border-bottom: 1px solid #261e17 !important;
-  transition: background-color 0.2s ease;
-}
-
-.server-list-row:last-child {
-  border-bottom: none !important;
-}
-
-.server-list-row:hover {
-  background-color: #1e1713 !important;
-}
-
-.server-meta-side {
-  display: flex !important;
-  align-items: center !important;
-  gap: 16px !important;
-}
-
-.server-avatar-img, 
-.server-avatar-placeholder {
-  width: 46px !important;
-  height: 46px !important;
-  border-radius: 8px !important;
-  object-fit: cover !important;
-  border: 1px solid #261e17 !important;
-}
-
-.server-avatar-placeholder {
-  background-color: #1e1713 !important;
-  color: #d8a85c !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-weight: 700 !important;
-  font-size: 1.2rem !important;
-}
-
-.server-info-text {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 6px !important;
-}
-
-.server-title-name {
-  font-size: 1.05rem !important;
-  font-weight: 600 !important;
-  color: #ffffff !important;
-}
-
-/* Dashboard Management Badges */
-.server-role-badge {
-  font-size: 0.7rem !important;
-  padding: 2px 8px !important;
-  border-radius: 4px !important;
-  width: max-content !important;
-  font-weight: 600 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.05em !important;
-}
-
-.role--admin {
-  background: rgba(226, 117, 74, 0.12) !important;
-  color: #e2754a !important;
-  border: 1px solid rgba(226, 117, 74, 0.25) !important;
-}
-
-.role--manage {
-  background: rgba(216, 168, 92, 0.12) !important;
-  color: #d8a85c !important;
-  border: 1px solid rgba(216, 168, 92, 0.25) !important;
-}
-
-.dashboard-empty-card {
-  background-color: #14100e !important;
-  border: 1px solid #261e17 !important;
-  border-radius: 8px !important;
-  padding: 48px !important;
-  text-align: center !important;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4) !important;
-}
-
-/* Guild Settings View (dashboard_guild.html) */
-.settings-module-card {
-  background-color: #14100e !important;
-  border: 1px solid #261e17 !important;
-  border-radius: 8px !important;
-  padding: 32px !important;
-  margin-bottom: 24px !important;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3) !important;
-}
-
-.settings-module-card:last-child {
-  margin-bottom: 0 !important;
-}
-
-.settings-card-head {
-  margin-bottom: 24px !important;
-  padding-bottom: 16px !important;
-  border-bottom: 1px solid #261e17 !important;
-}
-
-.settings-card-head h2 {
-  font-size: 1.35rem !important;
-  color: #d8a85c !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
-  margin: 0 !important;
-}
-
-.admin-only-pill {
-  font-size: 0.65rem !important;
-  background-color: rgba(226, 117, 74, 0.15) !important;
-  color: #e2754a !important;
-  border: 1px solid rgba(226, 117, 74, 0.3) !important;
-  padding: 2px 6px !important;
-  border-radius: 4px !important;
-  text-transform: uppercase !important;
-  font-weight: 600 !important;
-}
-
-.settings-card-head p {
-  color: #a39284 !important;
-  font-size: 0.9rem !important;
-  margin-top: 8px !important;
-  margin-bottom: 0 !important;
-}
-
-/* Custom Form Fields & Inputs Layout */
 .form-field-wrapper {
-  margin-bottom: 24px !important;
+  margin-bottom: 28px !important;
   text-align: left !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 .form-field-wrapper label {
   display: block !important;
   font-size: 0.9rem !important;
   font-weight: 600 !important;
-  color: #ffffff !important;
-  margin-bottom: 8px !important;
+  color: #e5dac9 !important;
+  letter-spacing: 0.02em !important;
+  margin-bottom: 10px !important;
 }
 
 .dashboard-native-input, 
 .dashboard-native-textarea {
   width: 100% !important;
   box-sizing: border-box !important;
-  background-color: #0b0807 !important;
-  border: 1px solid #261e17 !important;
-  border-radius: 6px !important;
-  padding: 12px 16px !important;
+  background-color: #0d0a08 !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 14px 18px !important;
   color: #ffffff !important;
   font-size: 0.95rem !important;
-  transition: border-color 0.2s ease !important;
+  font-family: inherit !important;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.dashboard-native-input:hover, 
+.dashboard-native-textarea:hover {
+  border-color: #4d3b2e !important;
+  background-color: #110d0a !important;
 }
 
 .dashboard-native-input:focus, 
 .dashboard-native-textarea:focus {
   outline: none !important;
-  border-color: #d8a85c !important;
+  background-color: #14100d !important;
+  border-color: var(--gold) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6), 
+              0 0 12px rgba(216, 168, 92, 0.15) !important;
 }
 
 .dashboard-native-textarea {
-  min-height: 100px !important;
+  min-height: 120px !important;
+  line-height: 1.5 !important;
   resize: vertical !important;
 }
 
 .field-help-hint {
   display: block !important;
   font-size: 0.82rem !important;
-  color: #a39284 !important;
-  margin-top: 6px !important;
-  line-height: 1.4 !important;
+  color: var(--text-muted) !important;
+  margin-top: 8px !important;
+  line-height: 1.40 !important;
 }
 
-/* Custom Switch Toggles */
 .dashboard-toggle-switch {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 12px !important;
+  gap: 16px !important;
   cursor: pointer !important;
   user-select: none !important;
-  margin-top: 4px !important;
+  margin-top: 6px !important;
+  padding: 4px 0 !important;
 }
 
 .dashboard-toggle-switch input {
@@ -2798,86 +1755,99 @@ p {
 }
 
 .toggle-switch-track {
-  width: 44px !important;
-  height: 22px !important;
-  background-color: #1e1713 !important;
-  border: 1px solid #261e17 !important;
+  width: 50px !important;
+  height: 26px !important;
+  background-color: #1c1612 !important;
+  border: 1px solid var(--line) !important;
   border-radius: 999px !important;
   position: relative !important;
   flex-shrink: 0 !important;
-  transition: background-color 0.2s ease, border-color 0.2s ease !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .toggle-switch-track::before {
   content: "" !important;
   position: absolute !important;
-  width: 14px !important;
-  height: 14px !important;
+  width: 18px !important;
+  height: 18px !important;
   left: 3px !important;
   bottom: 3px !important;
-  background-color: #a39284 !important;
+  background-color: #8c7e73 !important;
   border-radius: 50% !important;
-  transition: transform 0.2s ease, background-color 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .dashboard-toggle-switch input:checked + .toggle-switch-track {
-  background-color: rgba(147, 160, 107, 0.2) !important;
-  border-color: #93a06b !important;
+  background-color: rgba(147, 160, 107, 0.15) !important;
+  border-color: var(--sage) !important;
+  box-shadow: 0 0 12px rgba(147, 160, 107, 0.2) !important;
 }
 
 .dashboard-toggle-switch input:checked + .toggle-switch-track::before {
-  transform: translateX(22px) !important;
-  background-color: #93a06b !important;
+  transform: translateX(24px) !important;
+  background-color: var(--sage) !important;
 }
 
 .toggle-switch-label-text {
   font-size: 0.95rem !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
   color: #ffffff !important;
 }
 
-/* Array Tag Pools Controls */
 .tag-array-container {
-  background-color: #0b0807 !important;
-  border: 1px solid #261e17 !important;
-  border-radius: 6px !important;
+  background-color: #0d0a08 !important;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-sm) !important;
   padding: 16px !important;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5) !important;
 }
 
 .tag-array-pool {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 8px !important;
-  margin-bottom: 14px !important;
+  margin-bottom: 16px !important;
 }
 
 .tag-array-pill {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 6px !important;
-  background-color: #1e1713 !important;
-  border: 1px solid #261e17 !important;
-  color: #ffffff !important;
-  padding: 4px 12px !important;
-  border-radius: 999px !important;
+  gap: 8px !important;
+  background-color: var(--ink-soft) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--text) !important;
+  padding: 6px 14px !important;
+  border-radius: 6px !important;
   font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  animation: tagPopIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) ease;
 }
 
 .tag-array-pill-remove {
   cursor: pointer !important;
-  color: #a39284 !important;
-  font-weight: bold !important;
+  color: var(--text-muted) !important;
+  font-size: 1.1rem !important;
+  line-height: 1 !important;
+  transition: color 0.15s ease !important;
 }
 
 .tag-array-pill-remove:hover {
-  color: #e2754a !important;
+  color: var(--ember) !important;
 }
 
 .tag-array-action-row {
   display: flex !important;
-  gap: 10px !important;
+  gap: 12px !important;
 }
 
 .tag-array-action-row .dashboard-native-input {
-  flex: 1 !important;
+  background-color: #050403 !important;
+}
+
+@keyframes tagPopIn {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
