@@ -17,42 +17,37 @@
   {{ section_icons.get(id, section_icons['welcome']) | safe }}
 {% endmacro %}
 
-<header class="dash-hero dash-hero--guild">
-  <div class="dash-hero__glow dash-hero__glow--ember"></div>
-  <div class="container dash-guild-header">
-
-    <div class="dash-guild-header__icon-wrap">
+<header class="page-head">
+  <span class="page-head__eyebrow">Server Dashboard</span>
+  <div class="container">
+    <div class="dash-guild-heading">
       {% if icon %}
-        <img class="dash-guild-header__icon" src="{{ icon }}" alt="">
+        <img class="dash-guild-heading__icon" src="{{ icon }}" alt="">
       {% else %}
-        <div class="dash-guild-header__icon dash-guild-header__icon--placeholder">
+        <div class="dash-guild-heading__icon dash-guild-heading__icon--placeholder">
           {{ guild.name[0] | upper }}
         </div>
       {% endif %}
+      <div>
+        <h1>{{ guild.name }}</h1>
+        <p>
+          Signed in with
+          {% if is_admin %}
+            <strong class="color-ember">Administrator</strong>
+          {% else %}
+            <strong class="color-gold">Manage Server</strong>
+          {% endif %}
+          permissions.
+        </p>
+      </div>
     </div>
-
-    <div class="dash-guild-header__info">
-      <span class="page-head__eyebrow">Server Dashboard</span>
-
-      <h1 style="font-size: clamp(1.6rem, 4vw, 2.4rem);">{{ guild.name }}</h1>
-
-      <p>
-        Signed in with
-        {% if is_admin %}
-          <strong class="color-ember">Administrator</strong>
-        {% else %}
-          <strong class="color-gold">Manage Server</strong>
-        {% endif %}
-        permissions.
-      </p>
-
+    <div class="hero__actions" style="justify-content: center; margin-top: 24px;">
       <a class="btn btn--outline" href="{{ url_for('dashboard') }}">&larr; All servers</a>
     </div>
-
   </div>
 </header>
 
-<section class="section" style="padding-top: 32px;">
+<section class="section" style="padding-top: 0;">
   <div class="container dash-guild-layout">
 
     <aside class="dash-section-nav">
@@ -64,9 +59,7 @@
               <span class="dash-section-nav__icon">
                 {{ section_icon(section.id) }}
               </span>
-
               {{ section.label }}
-
               {% if section.required_permission == "administrator" %}
                 <span class="dash-section-nav__admin-dot" title="Admin only"></span>
               {% endif %}
@@ -84,7 +77,6 @@
             <div class="settings-card__icon">
               {{ section_icon(section.id) }}
             </div>
-
             <div>
               <h2>
                 {{ section.label }}
@@ -99,7 +91,6 @@
           <form method="post" action="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
             <input type="hidden" name="section" value="{{ section.id }}">
 
-            {# CSRF support (if Flask-WTF enabled) #}
             {% if csrf_token is defined %}
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             {% endif %}
@@ -124,12 +115,10 @@
 
                 {% elif field.type == "list" %}
                   <label for="field-{{ field.key }}">{{ field.label }}</label>
-
                   {% set list_value = settings.get(field.key, []) %}
                   <textarea id="field-{{ field.key }}"
                             name="{{ field.key }}"
                             style="display: none;">{{ list_value if list_value is string else (list_value | join("\n")) }}</textarea>
-
                   <div class="tag-input-container" data-field-key="{{ field.key }}">
                     <div class="tag-list"></div>
                     <div class="tag-input-row">
@@ -184,10 +173,7 @@
 
   function setActive(id) {
     navLinks.forEach(link => {
-      link.classList.toggle(
-        'is-active',
-        link.getAttribute('data-section') === id
-      );
+      link.classList.toggle('is-active', link.getAttribute('data-section') === id);
     });
   }
 
@@ -199,23 +185,19 @@
 
   cards.forEach(card => observer.observe(card));
 
-  // smoother + keeps URL hash
   navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-
       const target = document.querySelector(link.getAttribute('href'));
       if (!target) return;
-
       history.pushState(null, "", link.getAttribute('href'));
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 
-  // set initial active section
   if (cards.length) setActive(cards[0].id);
 
-  // Handle list/tag inputs
+  // Tag/word-list inputs
   document.querySelectorAll('.tag-input-container').forEach(function (container) {
     const fieldKey = container.getAttribute('data-field-key');
     const textarea = document.getElementById('field-' + fieldKey);
@@ -223,7 +205,6 @@
     const inputField = container.querySelector('.tag-input-field');
     const addBtn = container.querySelector('.tag-add-btn');
 
-    // Get current tags from textarea
     let tags = textarea.value.split('\n').map(t => t.trim()).filter(t => t.length > 0);
 
     function renderTags() {
@@ -231,23 +212,17 @@
       tags.forEach(function (tagText, index) {
         const tagEl = document.createElement('span');
         tagEl.className = 'tag';
-
         const textSpan = document.createElement('span');
         textSpan.className = 'tag-text';
         textSpan.textContent = tagText;
-
         const removeBtn = document.createElement('span');
         removeBtn.className = 'tag-remove';
         removeBtn.innerHTML = '&times;';
-        removeBtn.addEventListener('click', function () {
-          removeTag(index);
-        });
-
+        removeBtn.addEventListener('click', function () { removeTag(index); });
         tagEl.appendChild(textSpan);
         tagEl.appendChild(removeBtn);
         tagList.appendChild(tagEl);
       });
-      // Update hidden textarea
       textarea.value = tags.join('\n');
     }
 
@@ -265,20 +240,11 @@
       renderTags();
     }
 
-    // Add on enter key or comma key
     inputField.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        addTag();
-      }
+      if (e.key === 'Enter') { e.preventDefault(); addTag(); }
     });
+    addBtn.addEventListener('click', function (e) { e.preventDefault(); addTag(); });
 
-    addBtn.addEventListener('click', function (e) {
-      e.preventDefault();
-      addTag();
-    });
-
-    // Initial render
     renderTags();
   });
 
