@@ -12,16 +12,21 @@
 <main class="section" style="padding-top: 0;">
   <div class="container">
     
-    <!-- User Profile Banner Row -->
+   <!-- User Profile Banner Row (FIXED WITH current_user) -->
     <div class="dash-user-strip">
       <div class="dash-user-strip__left">
-        {% if user.avatar %}
-          <img class="dash-user-strip__avatar" src="https://cdn.discordapp.com/avatars/{{ user.id }}/{{ user.avatar }}.png?size=80" alt="{{ user.username }}">
+        {% if current_user.avatar %}
+          <img class="dash-user-strip__avatar" src="https://cdn.discordapp.com/avatars/{{ current_user.id }}/{{ current_user.avatar }}.png?size=80" alt="{{ current_user.username }}">
         {% else %}
-          <div class="dash-user-strip__avatar dashboard-server-icon" style="border-radius: 50%;">{{ user.username[0] | upper }}</div>
+          <div class="dash-user-strip__avatar dashboard-server-icon" style="border-radius: 50%;">{{ current_user.username[0] | upper if current_user.username else 'U' }}</div>
         {% endif %}
         <div>
-          <div class="dash-user-strip__name">{{ user.username }}<span style="color: var(--text-muted); font-weight: 400;">#{{ user.discriminator }}</span></div>
+          <div class="dash-user-strip__name">
+            {{ current_user.username }}
+            {% if current_user.discriminator and current_user.discriminator != '0' %}
+              <span style="color: var(--text-muted); font-weight: 400;">#{{ current_user.discriminator }}</span>
+            {% endif %}
+          </div>
           <div class="dash-user-strip__sub">Authenticated via Discord Application Authorization</div>
         </div>
       </div>
@@ -30,7 +35,6 @@
         <span class="dash-user-strip__count-label">Available Servers</span>
       </div>
     </div>
-
     <!-- Section Heading Grid Control -->
     <div class="dash-section-label">
       <span>Managed Servers</span>
