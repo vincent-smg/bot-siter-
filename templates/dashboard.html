@@ -1,5 +1,3 @@
-{% extends "base.html" %}
-
 {% block content %}
 <header class="page-head">
   <div class="container">
@@ -12,13 +10,13 @@
 <main class="section" style="padding-top: 0;">
   <div class="container">
     
-   <!-- User Profile Banner Row (FIXED WITH current_user) -->
+    <!-- User Profile Banner Row -->
     <div class="dash-user-strip">
       <div class="dash-user-strip__left">
         {% if current_user.avatar %}
           <img class="dash-user-strip__avatar" src="https://cdn.discordapp.com/avatars/{{ current_user.id }}/{{ current_user.avatar }}.png?size=80" alt="{{ current_user.username }}">
         {% else %}
-          <div class="dash-user-strip__avatar dashboard-server-icon" style="border-radius: 50%;">{{ current_user.username[0] | upper if current_user.username else 'U' }}</div>
+          <div class="dash-user-strip__avatar dashboard-server-icon">{{ current_user.username[0] | upper if current_user.username else 'U' }}</div>
         {% endif %}
         <div>
           <div class="dash-user-strip__name">
@@ -35,7 +33,8 @@
         <span class="dash-user-strip__count-label">Available Servers</span>
       </div>
     </div>
-    <!-- Section Heading Grid Control -->
+
+    <!-- Section Heading -->
     <div class="dash-section-label">
       <span>Managed Servers</span>
       <span class="dash-section-count">{{ guilds | length }}</span>
@@ -45,6 +44,7 @@
       <div class="dashboard-grid">
         {% for guild in guilds %}
           <a class="dashboard-server-card" href="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
+            
             {% if guild.icon %}
               <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=96" alt="{{ guild.name }}">
             {% else %}
@@ -60,6 +60,7 @@
               {% endif %}
             </div>
             
+            <!-- Standardized Arrow SVG -->
             <svg class="dashboard-server-card__arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
             </svg>
@@ -74,12 +75,9 @@
           </svg>
         </div>
         <h2>No Guilds Available</h2>
-        <p>You do not currently possess administrative or management permissions on any servers utilizing the active runtime instance.</p>
+        <p>You do not currently possess administrative or management permissions on any servers.</p>
         <div style="margin-top: 24px;">
-          <a href="#" class="btn btn--gold">
-            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
-            Invite Bot Instance
-          </a>
+          <a href="#" class="btn btn--gold">Invite Bot Instance</a>
         </div>
       </div>
     {% endif %}
