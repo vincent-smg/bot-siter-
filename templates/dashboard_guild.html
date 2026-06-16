@@ -1,31 +1,31 @@
 {% extends "base.html" %}
 {% block title %}{{ guild.name }} — Dashboard — Anko Uguisu{% endblock %}
-{% block content %}
 
+{% block content %}
 {% set icon = guild | guild_icon_url %}
 {% set is_admin = permission_level == "administrator" %}
 
 <div class="page-head">
   <span class="page-head__eyebrow">Server Dashboard</span>
-  <div class="dash-guild-heading">
+  <div class="dash-guild-heading" style="display: flex; align-items: center; gap: 20px; text-align: left;">
     {% if icon %}
-      <img class="dash-guild-heading__icon" src="{{ icon }}" alt="">
+      <img class="dash-guild-heading__icon" src="{{ icon }}" alt="" style="width:56px; height:56px; border-radius:14px; object-fit: cover;">
     {% else %}
-      <div class="dash-guild-heading__icon dash-guild-heading__icon--placeholder" style="width:56px;height:56px;border-radius:14px;">
+      <div class="dash-guild-heading__icon dash-guild-heading__icon--placeholder" style="width:56px;height:56px;border-radius:14px; background-color: #1e1713; color: #d8a85c; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.3rem;">
         {{ guild.name[0] | upper }}
       </div>
     {% endif %}
     <div>
-      <h1>{{ guild.name }}</h1>
-      <p>
+      <h1 style="margin: 0; font-size: 2rem;">{{ guild.name }}</h1>
+      <p style="margin: 4px 0 0 0; color: #a39284;">
         Signed in with
-        {% if is_admin %}<strong class="color-ember">Administrator</strong>
-        {% else %}<strong class="color-gold">Manage Server</strong>{% endif %}
+        {% if is_admin %}<strong style="color: #e2754a;">Administrator</strong>
+        {% else %}<strong style="color: #d8a85c;">Manage Server</strong>{% endif %}
         permissions.
       </p>
     </div>
   </div>
-  <div style="margin-top:18px;">
+  <div style="margin-top:18px; text-align: left;">
     <a class="btn btn--outline" href="{{ url_for('dashboard') }}">&larr; All servers</a>
   </div>
 </div>
@@ -39,7 +39,7 @@
         {% for section in sections %}
           <li>
             <a href="#{{ section.id }}" class="dash-section-nav__link" data-section="{{ section.id }}">
-              {{ section.label }}
+              <span>{{ section.label }}</span>
               {% if section.required_permission == "administrator" %}
                 <span class="dash-section-nav__admin-dot" title="Admin only"></span>
               {% endif %}
@@ -53,9 +53,7 @@
       <div class="settings-block-wrapper">
         {% for section in sections %}
           
-          <!-- Individual Config Module Card Block -->
           <div class="settings-module-card" id="{{ section.id }}">
-
             <div class="settings-card-head">
               <h2>
                 {{ section.label }}
@@ -94,7 +92,6 @@
                       <textarea id="field-{{ field.key }}" name="{{ field.key }}"
                                 style="display:none;">{{ list_value if list_value is string else (list_value | join("\n")) }}</textarea>
                       
-                      <!-- Tag Pool Form Component -->
                       <div class="tag-array-container" data-field-key="{{ field.key }}">
                         <div class="tag-array-pool"></div>
                         <div class="tag-array-action-row">
@@ -118,12 +115,11 @@
                 {% endfor %}
               </div>
 
-              <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end;">
+              <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #261e17; display: flex; justify-content: flex-end;">
                 <button type="submit" class="btn btn--gold">Save {{ section.label }}</button>
               </div>
 
             </form>
-
           </div>
         {% endfor %}
       </div>
@@ -131,7 +127,6 @@
 
   </div>
 </section>
-
 {% endblock %}
 
 {% block scripts %}
