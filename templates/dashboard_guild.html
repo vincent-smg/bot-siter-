@@ -1,40 +1,32 @@
 {% extends "base.html" %}
-{% block title %}{{ guild.name }} — Dashboard — Anko Uguisu{% endblock %}
+{% block title %}{{ guild.name }} — Config Panel{% endblock %}
 {% block content %}
 
 {% set icon = guild | guild_icon_url %}
 {% set is_admin = permission_level == "administrator" %}
-{% set section_icons = {
-  "welcome":     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-  "goodbye":     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
-  "word_filter": '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
-  "witbot":      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
-} %}
-
-{% macro section_icon(id) %}{{ section_icons.get(id, section_icons['welcome']) | safe }}{% endmacro %}
 
 <div class="page-head">
-  <span class="page-head__eyebrow">Server Dashboard</span>
+  <span class="page-head__eyebrow">Server Management</span>
   <div class="dash-guild-heading">
     {% if icon %}
-      <img class="dash-guild-heading__icon" src="{{ icon }}" alt="">
+      <img class="dash-guild-heading__icon" src="{{ icon }}" alt="{{ guild.name }}">
     {% else %}
-      <div class="dash-guild-heading__icon dash-guild-heading__icon--placeholder" style="width:56px;height:56px;border-radius:14px;">
+      <div class="dash-guild-heading__icon dash-guild-heading__icon--placeholder">
         {{ guild.name[0] | upper }}
       </div>
     {% endif %}
     <div>
       <h1>{{ guild.name }}</h1>
       <p>
-        Signed in with
-        {% if is_admin %}<strong class="color-ember">Administrator</strong>
-        {% else %}<strong class="color-gold">Manage Server</strong>{% endif %}
-        permissions.
+        Authenticated with 
+        {% if is_admin %}<span class="text-accent-admin">Administrator</span>
+        {% else %}<span class="text-accent-manage">Manage Server</span>{% endif %} 
+        clearance levels.
       </p>
     </div>
   </div>
   <div style="margin-top:18px;">
-    <a class="btn btn--outline" href="{{ url_for('dashboard') }}">&larr; All servers</a>
+    <a class="btn btn--outline btn--sm" href="{{ url_for('dashboard') }}">&larr; Return to Servers</a>
   </div>
 </div>
 
@@ -42,15 +34,14 @@
   <div class="container dash-guild-layout">
 
     <aside class="dash-section-nav">
-      <div class="dash-section-nav__label">Sections</div>
-      <ul>
+      <div class="dash-section-nav__label">Configuration Modules</div>
+      <ul class="dash-section-nav__list">
         {% for section in sections %}
           <li>
             <a href="#{{ section.id }}" class="dash-section-nav__link" data-section="{{ section.id }}">
-              <span class="dash-section-nav__icon">{{ section_icon(section.id) }}</span>
-              {{ section.label }}
+              <span class="nav-link-text">{{ section.label }}</span>
               {% if section.required_permission == "administrator" %}
-                <span class="dash-section-nav__admin-dot" title="Admin only"></span>
+                <span class="admin-indicator-dot" title="Requires Administrator Privilege"></span>
               {% endif %}
             </a>
           </li>
@@ -59,83 +50,80 @@
     </aside>
 
     <div class="dash-settings-col">
-      <div class="settings-block">
+      <div class="settings-block-container">
         {% for section in sections %}
-          <div class="settings-block__section" id="{{ section.id }}">
+          <div class="settings-card-section" id="{{ section.id }}">
 
-            <div class="settings-block__section-head">
-              <div class="settings-card__icon">{{ section_icon(section.id) }}</div>
+            <div class="settings-card-section__header">
               <div>
                 <h2>
                   {{ section.label }}
                   {% if section.required_permission == "administrator" %}
-                    <span class="perm-tag">Admin only</span>
+                    <span class="badge-tag-admin">Admin Only</span>
                   {% endif %}
                 </h2>
-                <p>{{ section.description }}</p>
+                <p class="section-desc-text">{{ section.description }}</p>
               </div>
             </div>
 
-            <form method="post" action="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
+            <form method="post" action="{{ url_for('dashboard_guild', guild_id=guild.id) }}" class="styled-dashboard-form">
               <input type="hidden" name="section" value="{{ section.id }}">
               {% if csrf_token is defined %}
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
               {% endif %}
 
-              <div class="settings-block__fields">
+              <div class="settings-form-fields">
                 {% for field in section.fields %}
-                  <div class="field">
+                  <div class="form-field-group">
 
                     {% if field.type == "toggle" %}
-                      <label class="toggle">
-                        <input type="checkbox" name="{{ field.key }}"
-                               {% if settings.get(field.key) %}checked{% endif %}>
-                        <span class="track"></span>
-                        {{ field.label }}
-                      </label>
+                      <div class="form-field-toggle-wrapper">
+                        <label class="custom-switch-label">
+                          <input type="checkbox" class="custom-switch-input" name="{{ field.key }}" {% if settings.get(field.key) %}checked{% endif %}>
+                          <span class="custom-switch-slider"></span>
+                          <span class="custom-switch-text">{{ field.label }}</span>
+                        </label>
+                      </div>
 
                     {% elif field.type == "textarea" %}
-                      <label for="field-{{ field.key }}">{{ field.label }}</label>
-                      <textarea id="field-{{ field.key }}" name="{{ field.key }}"
-                                placeholder="{{ field.placeholder or '' }}">{{ settings.get(field.key, "") }}</textarea>
+                      <label class="custom-input-label" for="field-{{ field.key }}">{{ field.label }}</label>
+                      <textarea class="custom-textarea-element" id="field-{{ field.key }}" name="{{ field.key }}" placeholder="{{ field.placeholder or 'Enter text configuration...' }}">{{ settings.get(field.key, "") }}</textarea>
 
                     {% elif field.type == "list" %}
-                      <label>{{ field.label }}</label>
+                      <label class="custom-input-label">{{ field.label }}</label>
                       {% set list_value = settings.get(field.key, []) %}
-                      <textarea id="field-{{ field.key }}" name="{{ field.key }}"
-                                style="display:none;">{{ list_value if list_value is string else (list_value | join("\n")) }}</textarea>
-                      <div class="tag-input-container" data-field-key="{{ field.key }}">
-                        <div class="tag-list"></div>
-                        <div class="tag-input-row">
-                          <input type="text" class="tag-input-field" placeholder="Type a word and press Enter...">
-                          <button type="button" class="btn btn--outline btn--sm tag-add-btn">Add</button>
+                      <textarea id="field-{{ field.key }}" name="{{ field.key }}" style="display:none;">{{ list_value if list_value is string else (list_value | join("\n")) }}</textarea>
+                      
+                      <div class="tag-input-component" data-field-key="{{ field.key }}">
+                        <div class="tag-pool-display"></div>
+                        <div class="tag-input-action-bar">
+                          <input type="text" class="custom-text-input-element tag-native-input" placeholder="Type data entry item and press Enter...">
+                          <button type="button" class="btn btn--outline btn--sm tag-append-trigger">Add Entry</button>
                         </div>
                       </div>
 
                     {% else %}
-                      <label for="field-{{ field.key }}">{{ field.label }}</label>
-                      <input type="text" id="field-{{ field.key }}" name="{{ field.key }}"
-                             placeholder="{{ field.placeholder or '' }}"
-                             value="{{ settings.get(field.key, '') }}">
+                      <label class="custom-input-label" for="field-{{ field.key }}">{{ field.label }}</label>
+                      <input type="text" class="custom-text-input-element" id="field-{{ field.key }}" name="{{ field.key }}" placeholder="{{ field.placeholder or '' }}" value="{{ settings.get(field.key, '') }}">
                     {% endif %}
 
                     {% if field.help %}
-                      <div class="help">{{ field.help }}</div>
+                      <span class="form-field-help-message">{{ field.help }}</span>
                     {% endif %}
 
                   </div>
                 {% endfor %}
               </div>
 
-              <div class="settings-block__footer">
-                <button type="submit" class="btn btn--gold">Save {{ section.label }}</button>
+              <div class="settings-card-section__footer">
+                <button type="submit" class="btn btn--gold">Save changes</button>
               </div>
 
             </form>
 
           </div>
           {% if not loop.last %}
-            <div class="settings-block__divider"></div>
+            <hr class="section-divider-line">
           {% endif %}
         {% endfor %}
       </div>
@@ -150,7 +138,7 @@
 <script>
 (function () {
   const navLinks = document.querySelectorAll('.dash-section-nav__link');
-  const sections = document.querySelectorAll('.settings-block__section[id]');
+  const sections = document.querySelectorAll('.settings-card-section[id]');
   if (!navLinks.length || !sections.length) return;
 
   function setActive(id) {
@@ -177,29 +165,29 @@
 
   if (sections.length) setActive(sections[0].id);
 
-  document.querySelectorAll('.tag-input-container').forEach(function (container) {
+  document.querySelectorAll('.tag-input-component').forEach(function (container) {
     const fieldKey = container.getAttribute('data-field-key');
     const textarea = document.getElementById('field-' + fieldKey);
-    const tagList = container.querySelector('.tag-list');
-    const inputField = container.querySelector('.tag-input-field');
-    const addBtn = container.querySelector('.tag-add-btn');
+    const tagPool = container.querySelector('.tag-pool-display');
+    const inputField = container.querySelector('.tag-native-input');
+    const addBtn = container.querySelector('.tag-append-trigger');
     let tags = textarea.value.split('\n').map(t => t.trim()).filter(t => t.length > 0);
 
     function renderTags() {
-      tagList.innerHTML = '';
+      tagPool.innerHTML = '';
       tags.forEach(function (tagText, index) {
         const tagEl = document.createElement('span');
-        tagEl.className = 'tag';
+        tagEl.className = 'ui-pill-tag';
         const textSpan = document.createElement('span');
-        textSpan.className = 'tag-text';
+        textSpan.className = 'ui-pill-tag__text';
         textSpan.textContent = tagText;
         const removeBtn = document.createElement('span');
-        removeBtn.className = 'tag-remove';
+        removeBtn.className = 'ui-pill-tag__remove';
         removeBtn.innerHTML = '&times;';
         removeBtn.addEventListener('click', function () { tags.splice(index, 1); renderTags(); });
         tagEl.appendChild(textSpan);
         tagEl.appendChild(removeBtn);
-        tagList.appendChild(tagEl);
+        tagPool.appendChild(tagEl);
       });
       textarea.value = tags.join('\n');
     }
