@@ -1,34 +1,38 @@
 {% extends "base.html" %}
 
+{% block title %}{{ guild.name }} Configuration | Anko Uguisu{% endblock %}
+
 {% block content %}
-<header class="page-head" style="padding-bottom: 24px;">
-  <div class="container">
-    <div class="dash-guild-heading">
+<!-- Discord Minimalist Server Header -->
+<header class="page-head" style="background: linear-gradient(180deg, rgba(30, 31, 34, 0.8) 0%, rgba(22, 22, 24, 0) 100%); padding: 50px 0 30px 0;">
+  <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+    <div class="dash-guild-heading" style="display: flex; align-items: center; gap: 24px;">
       {% if guild.icon %}
-        <img class="dash-guild-heading__icon" src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=128" alt="{{ guild.name }}">
+        <img class="dash-guild-heading__icon" src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=128" alt="{{ guild.name }}" style="width: 80px; height: 80px; border-radius: 20px; object-fit: cover; box-shadow: 0 8px 16px rgba(0,0,0,0.4); border: 2px solid rgba(255,255,255,0.05);">
       {% else %}
-        <div class="dash-guild-heading__icon dash-guild-heading__icon--placeholder">{{ guild.name[0] | upper }}</div>
+        <div class="dash-guild-heading__icon dash-guild-heading__icon--placeholder" style="width: 80px; height: 80px; border-radius: 20px; background: #4f545c; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; font-family: 'Shippori Mincho', serif;">{{ guild.name[0] | upper }}</div>
       {% endif %}
       <div style="text-align: left;">
-        <h1>{{ guild.name }}</h1>
-        <p>Configuration panel for custom systems and module variables.</p>
+        <h1 style="font-family: 'Shippori Mincho', serif; font-size: 2.25rem; color: #ffffff; margin: 0 0 6px 0;">{{ guild.name }}</h1>
+        <p style="color: #9ca3af; font-size: 0.95rem; margin: 0;">Configuration panel for custom systems and module variables.</p>
       </div>
     </div>
   </div>
 </header>
 
-<div class="container">
-  <div class="dash-guild-layout">
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px 100px 20px;">
+  <!-- Two Column Layout: Sticky Left Nav & Right Scroll Area -->
+  <div class="dash-guild-layout" style="display: grid; grid-template-columns: 260px 1fr; gap: 40px; align-items: start;">
     
-    <!-- Left Navigation Bar Module -->
-    <aside class="dash-section-nav">
-      <div class="dash-section-nav__label">System Sections</div>
-      <ul>
+    <!-- Left Navigation Bar Module (Fixed Sticky position) -->
+    <aside class="dash-section-nav" style="position: sticky; top: 100px; background: #2b2d31; border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.04);">
+      <div class="dash-section-nav__label" style="font-size: 0.75rem; text-transform: uppercase; color: #9ca3af; font-weight: 700; letter-spacing: 1px; margin-bottom: 16px; padding-left: 8px;">System Sections</div>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px;">
         {% for section in config_schema %}
           <li>
-            <a class="dash-section-nav__link {% if loop.first %}is-active{% endif %}" href="#section-{{ section.key }}">
-              <div class="dash-section-nav__icon">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <a class="dash-section-nav__link {% if loop.first %}is-active{% endif %}" href="#section-{{ section.key }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: #9ca3af; text-decoration: none; border-radius: 8px; font-size: 0.95rem; font-weight: 500; transition: all 0.2s ease;">
+              <div class="dash-section-nav__icon" style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; opacity: 0.7;">
+                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 </svg>
@@ -40,56 +44,56 @@
       </ul>
     </aside>
 
-    <!-- Main Settings Interactive Form Panel -->
-    <form method="POST" action="{{ url_for('dashboard_guild_save', guild_id=guild.id) }}" style="position: relative;">
+    <!-- Main Settings Form Panel -->
+    <form method="POST" action="{{ url_for('dashboard_guild_save', guild_id=guild.id) }}" style="position: relative; display: flex; flex-direction: column; gap: 32px;">
       
       {% for section in config_schema %}
-        <section id="section-{{ section.key }}" class="settings-block">
-          <div class="settings-block__head">
-            <h2 class="settings-block__title">{{ section.title }}</h2>
+        <section id="section-{{ section.key }}" class="settings-block" style="background: #2b2d31; border-radius: 14px; border: 1px solid rgba(255,255,255,0.04); padding: 32px; scroll-margin-top: 100px;">
+          <div class="settings-block__head" style="border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 16px; margin-bottom: 28px;">
+            <h2 class="settings-block__title" style="font-size: 1.35rem; font-weight: 700; color: #ffffff; margin: 0 0 6px 0;">{{ section.title }}</h2>
             {% if section.description %}
-              <p class="settings-block__desc">{{ section.description }}</p>
+              <p class="settings-block__desc" style="color: #9ca3af; font-size: 0.875rem; margin: 0; line-height: 1.5;">{{ section.description }}</p>
             {% endif %}
           </div>
           
-          <div class="settings-block__fields">
+          <div class="settings-block__fields" style="display: flex; flex-direction: column; gap: 24px;">
             {% for field in section.fields %}
-              <div class="form-field-wrapper">
+              <div class="form-field-wrapper" style="display: flex; flex-direction: column; gap: 8px;">
                 
+                <!-- Field Type Route Switch -->
                 {% if field.type == "toggle" %}
-                  <label class="dashboard-toggle-switch">
-                    <input type="checkbox" name="{{ field.key }}" {% if settings.get(field.key) %}checked{% endif %}>
-                    <span class="toggle-switch-track"></span>
-                    <span class="toggle-switch-label-text">{{ field.label }}</span>
+                  <label class="dashboard-toggle-switch" style="display: flex; align-items: center; justify-content: space-between; background: #1e1f22; padding: 16px 20px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255,255,255,0.02);">
+                    <span class="toggle-switch-label-text" style="font-weight: 600; color: #ffffff; font-size: 0.95rem;">{{ field.label }}</span>
+                    <div style="position: relative; display: inline-block; width: 44px; height: 24px;">
+                      <input type="checkbox" name="{{ field.key }}" {% if settings.get(field.key) %}checked{% endif %} style="opacity: 0; width: 0; height: 0;" class="toggle-input">
+                      <span class="toggle-switch-track" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #4f545c; transition: .2s; border-radius: 34px;"></span>
+                    </div>
                   </label>
 
                 {% elif field.type == "textarea" %}
-                  <label for="field-{{ field.key }}">{{ field.label }}</label>
-                  <textarea class="dashboard-native-textarea" id="field-{{ field.key }}" name="{{ field.key }}"
-                            placeholder="{{ field.placeholder or '' }}">{{ settings.get(field.key, "") }}</textarea>
+                  <label for="field-{{ field.key }}" style="font-weight: 600; color: #e0e1e5; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">{{ field.label }}</label>
+                  <textarea class="dashboard-native-textarea" id="field-{{ field.key }}" name="{{ field.key }}" placeholder="{{ field.placeholder or '' }}" style="background: #1e1f22; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #ffffff; padding: 14px; min-height: 120px; font-family: inherit; font-size: 0.95rem; resize: vertical; focus: outline-color: #f59e0b;">{{ settings.get(field.key, "") }}</textarea>
 
                 {% elif field.type == "list" %}
-                  <label>{{ field.label }}</label>
+                  <label style="font-weight: 600; color: #e0e1e5; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">{{ field.label }}</label>
                   {% set list_value = settings.get(field.key, []) %}
                   <textarea id="field-{{ field.key }}" name="{{ field.key }}" style="display:none;">{{ list_value if list_value is string else (list_value | join("\n")) }}</textarea>
                   
-                  <div class="tag-array-container" data-field-key="{{ field.key }}">
-                    <div class="tag-array-pool"></div>
-                    <div class="tag-array-action-row">
-                      <input type="text" class="dashboard-native-input tag-input-field" placeholder="Type entry and press Enter...">
-                      <button type="button" class="btn btn--outline btn--sm tag-add-btn">Add</button>
+                  <div class="tag-array-container" data-field-key="{{ field.key }}" style="background: #1e1f22; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 16px;">
+                    <div class="tag-array-pool" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;"></div>
+                    <div class="tag-array-action-row" style="display: flex; gap: 10px;">
+                      <input type="text" class="dashboard-native-input tag-input-field" placeholder="Type entry and press Enter..." style="background: #2b2d31; border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; color: #ffffff; padding: 10px 14px; font-size: 0.9rem; flex: 1;">
+                      <button type="button" class="btn btn--outline btn--sm tag-add-btn" style="background: transparent; border: 1px solid #f59e0b; color: #f59e0b; padding: 0 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;">Add</button>
                     </div>
                   </div>
 
                 {% else %}
-                  <label for="field-{{ field.key }}">{{ field.label }}</label>
-                  <input type="text" class="dashboard-native-input" id="field-{{ field.key }}" name="{{ field.key }}"
-                         placeholder="{{ field.placeholder or '' }}"
-                         value="{{ settings.get(field.key, '') }}">
+                  <label for="field-{{ field.key }}" style="font-weight: 600; color: #e0e1e5; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.5px;">{{ field.label }}</label>
+                  <input type="text" class="dashboard-native-input" id="field-{{ field.key }}" name="{{ field.key }}" placeholder="{{ field.placeholder or '' }}" value="{{ settings.get(field.key, '') }}" style="background: #1e1f22; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #ffffff; padding: 12px 14px; font-size: 0.95rem;">
                 {% endif %}
 
                 {% if field.help %}
-                  <span class="field-help-hint">{{ field.help }}</span>
+                  <span class="field-help-hint" style="color: #9ca3af; font-size: 0.8rem; margin-top: 2px; padding-left: 2px; display: block;">{{ field.help }}</span>
                 {% endif %}
 
               </div>
@@ -98,18 +102,81 @@
         </section>
       {% endfor %}
 
-      <!-- Sticky Bottom Action Notification Guard Bar -->
-      <div class="settings-action-bar">
-        <span class="settings-action-bar__text">Be careful — unsaved configuration metrics will be lost if you leave.</span>
+      <!-- Floating Sticky Action Guard Notification Footer Bar -->
+      <div class="settings-action-bar" style="position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 1160px; background: #111214; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 16px 32px rgba(0,0,0,0.5); border-radius: 12px; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; z-index: 100; box-sizing: border-box;">
+        <span class="settings-action-bar__text" style="color: #e0e1e5; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+          <svg style="width: 18px; height: 18px; color: #f59e0b;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z"></path>
+          </svg>
+          Be careful — unsaved configuration metrics will be lost if you leave.
+        </span>
         <div style="display: flex; gap: 12px;">
-          <a href="{{ url_for('dashboard') }}" class="btn btn--ghost">Cancel</a>
-          <button type="submit" class="btn btn--gold">Save Variables</button>
+          <a href="{{ url_for('dashboard') }}" class="btn btn--ghost" style="color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">Cancel</a>
+          <button type="submit" class="btn btn--gold" style="background: #f59e0b; color: #1e1f22; border: none; padding: 10px 24px; border-radius: 6px; font-size: 0.9rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">Save Variables</button>
         </div>
       </div>
 
     </form>
   </div>
 </div>
+
+<!-- Extra Layout Behavioral Micro-Overlays -->
+<style>
+  .dash-section-nav__link.is-active {
+    background: #404249 !important;
+    color: #ffffff !important;
+  }
+  .dash-section-nav__link.is-active .dash-section-nav__icon {
+    opacity: 1 !important;
+    color: #f59e0b !important;
+  }
+  .dash-section-nav__link:hover:not(.is-active) {
+    background: rgba(255,255,255,0.02) !important;
+    color: #ffffff !important;
+  }
+  .toggle-input:checked + .toggle-switch-track {
+    background-color: #22c55e !important;
+  }
+  .toggle-input:checked + .toggle-switch-track::after {
+    transform: translateX(20px);
+  }
+  .toggle-switch-track::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: white;
+    top: 3px;
+    left: 3px;
+    transition: .2s;
+  }
+  .tag-array-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #2b2d31;
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .tag-array-pill-remove {
+    cursor: pointer;
+    color: #ef4444;
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+  .tag-array-pill-remove:hover {
+    color: #f87171;
+  }
+  .tag-add-btn:hover {
+    background: #f59e0b !important;
+    color: #1e1f22 !important;
+  }
+</style>
 
 <!-- Form Interaction Automation Engine Script -->
 <script>
@@ -122,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let current = "";
     sections.forEach(section => {
       const sectionTop = section.offsetTop;
-      if (pageYOffset >= sectionTop - 140) {
+      if (window.pageYOffset >= sectionTop - 140) {
         current = section.getAttribute("id");
       }
     });
@@ -134,8 +201,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
 
-  // Array Tag Handler Pool Scripting
-  document.querySelectorAll(".tag-array-container").forEeach(container => {
+  // Array Tag Handler Pool Scripting (Fixed .forEeach syntax typo bug!)
+  document.querySelectorAll(".tag-array-container").forEach(container => {
     const hiddenTextarea = document.getElementById("field-" + container.getAttribute("data-field-key"));
     const pool = container.querySelector(".tag-array-pool");
     const input = container.querySelector(".tag-input-field");
