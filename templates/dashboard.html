@@ -3,88 +3,119 @@
 {% block title %}Dashboard | Anko Uguisu{% endblock %}
 
 {% block content %}
-<header class="page-head">
+<header class="page-head" style="background: linear-gradient(180deg, rgba(30, 31, 34, 0.8) 0%, rgba(22, 22, 24, 0) 100%); padding: 60px 0 40px 0; text-align: center;">
   <div class="container">
-    <span class="page-head__eyebrow">Control Center</span>
-    <h1>Your Dashboards</h1>
-    <p>Select a managed server instance from the array below to modify configurations and channel parameters.</p>
+    <span class="page-head__eyebrow" style="color: #f59e0b; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px;">Control Center</span>
+    <h1 style="font-family: 'Shippori Mincho', serif; font-size: 2.75rem; margin: 10px 0 15px 0; color: #ffffff;">Your Dashboards</h1>
+    <p style="max-width: 600px; margin: 0 auto; color: #9ca3af; font-size: 1rem; line-height: 1.6;">Select a managed server instance from the array below to modify configurations and channel parameters.</p>
   </div>
 </header>
 
-<main class="section" style="padding-top: 0;">
-  <div class="container">
+<main class="section" style="padding-top: 20px; padding-bottom: 80px;">
+  <div class="container" style="max-width: 1100px; margin: 0 auto; padding: 0 20px;">
     
-    <div class="dash-user-strip">
-      <div class="dash-user-strip__left">
+    <div class="dash-user-strip" style="background: rgba(43, 45, 49, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; gap: 20px;">
+      <div class="dash-user-strip__left" style="display: flex; align-items: center; gap: 20px;">
         {% if current_user and current_user.avatar %}
-          <img class="dash-user-strip__avatar" src="https://cdn.discordapp.com/avatars/{{ current_user.id }}/{{ current_user.avatar }}.png?size=80" alt="User Avatar">
+          <img class="dash-user-strip__avatar" src="https://cdn.discordapp.com/avatars/{{ current_user.id }}/{{ current_user.avatar }}.png?size=80" alt="User Avatar" style="width: 72px; height: 72px; border-radius: 50%; border: 3px solid #3b82f6; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);">
         {% else %}
-          <div class="dash-user-strip__avatar dashboard-server-icon" style="border-radius: 50%;">
+          <div class="dash-user-strip__avatar dashboard-server-icon" style="width: 72px; height: 72px; border-radius: 50%; background: #3b82f6; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; font-weight: 600; border: 3px solid #3b82f6;">
             {{ current_user.username[0] | upper if (current_user and current_user.username) else 'U' }}
           </div>
         {% endif %}
         <div>
-          <div class="dash-user-strip__name">
+          <div class="dash-user-strip__name" style="font-size: 1.35rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 4px;">
             {{ current_user.username if current_user else 'Authorized User' }}
             {% if current_user and current_user.discriminator and current_user.discriminator != '0' %}
-              <span style="color: var(--text-muted); font-weight: 400;">#{{ current_user.discriminator }}</span>
+              <span style="color: #6b7280; font-weight: 400; font-size: 1.1rem;">#{{ current_user.discriminator }}</span>
             {% endif %}
           </div>
-          <div class="dash-user-strip__sub">Authenticated via Discord Application Authorization</div>
+          <div class="dash-user-strip__sub" style="color: #9ca3af; font-size: 0.875rem; margin-top: 4px; display: flex; align-items: center; gap: 6px;">
+            <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block;"></span>
+            Authenticated via Discord
+          </div>
         </div>
       </div>
-      <div class="dash-user-strip__right">
-        <span class="dash-user-strip__count">{{ guilds | length if guilds else 0 }}</span>
-        <span class="dash-user-strip__count-label">Available Servers</span>
+      
+      <div class="dash-user-strip__right" style="display: flex; align-items: center; gap: 24px; background: rgba(0, 0, 0, 0.2); padding: 12px 24px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.02);">
+        <div style="text-align: right;">
+          <span class="dash-user-strip__count" style="display: block; font-size: 1.75rem; font-weight: 800; color: #f59e0b; line-height: 1;">{{ guilds | length if guilds else 0 }}</span>
+          <span class="dash-user-strip__count-label" style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; display: block;">Available Servers</span>
+        </div>
       </div>
     </div>
 
-    <div class="dash-section-label">
-      <span>Managed Servers</span>
-      <span class="dash-section-count">{{ guilds | length if guilds else 0 }}</span>
+    <div class="dash-section-label" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 12px; margin-bottom: 24px;">
+      <span style="font-size: 1.1rem; font-weight: 600; color: #ffffff; letter-spacing: 0.5px;">Managed Instances</span>
+      <span class="dash-section-count" style="background: rgba(255, 255, 255, 0.05); color: #9ca3af; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">{{ guilds | length if guilds else 0 }} total</span>
     </div>
 
     {% if guilds and guilds | length > 0 %}
-      <div class="dashboard-grid">
+      <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
         {% for guild in guilds %}
-          <a class="dashboard-server-card" href="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
+          <a class="dashboard-server-card" href="{{ url_for('dashboard_guild', guild_id=guild.id) }}" style="background: #2b2d31; border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 14px; padding: 20px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
             
-            {% if guild.icon %}
-              <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=96" alt="{{ guild.name }}">
-            {% else %}
-              <div class="dashboard-server-icon">{{ guild.name[0] | upper if guild.name else 'G' }}</div>
-            {% endif %}
-            
-            <div class="info">
-              <div class="name">{{ guild.name }}</div>
-              {% if guild.owner %}
-                <span class="dashboard-badge">Owner</span>
+            <div style="display: flex; align-items: center; gap: 16px;">
+              {% if guild.icon %}
+                <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=96" alt="{{ guild.name }}" style="width: 56px; height: 56px; border-radius: 12px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
               {% else %}
-                <span class="dashboard-badge is-admin">Admin</span>
+                <div class="dashboard-server-icon" style="width: 56px; height: 56px; border-radius: 12px; background: #404249; color: #e0e1e5; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700;">
+                  {{ guild.name[0] | upper if guild.name else 'G' }}
+                </div>
               {% endif %}
+              
+              <div class="info">
+                <div class="name" style="font-weight: 600; color: #ffffff; font-size: 1.05rem; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">{{ guild.name }}</div>
+                {% if guild.owner %}
+                  <span class="dashboard-badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(245, 158, 11, 0.25);">Owner</span>
+                {% else %}
+                  <span class="dashboard-badge is-admin" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.25);">Admin</span>
+                {% endif %}
+              </div>
             </div>
             
-            <svg class="dashboard-server-card__arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
-            </svg>
+            <div class="card-arrow-wrapper" style="background: rgba(255, 255, 255, 0.03); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.05); color: #9ca3af; transition: all 0.2s ease;">
+              <svg class="dashboard-server-card__arrow" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </div>
           </a>
         {% endfor %}
       </div>
     {% else %}
-      <div class="dashboard-empty">
-        <div class="dashboard-empty__icon">
-          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <div class="dashboard-empty" style="background: #2b2d31; border: 2px dashed rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 60px 40px; text-align: center; max-width: 500px; margin: 40px auto 0 auto;">
+        <div class="dashboard-empty__icon" style="background: rgba(239, 68, 68, 0.1); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; color: #ef4444;">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="width: 32px; height: 32px;">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"></path>
           </svg>
         </div>
-        <h2>No Guilds Available</h2>
-        <p>You do not currently possess administrative or management permissions on any servers.</p>
-        <div style="margin-top: 24px;">
-          <a href="{{ invite_url if invite_url else '#' }}" class="btn btn--gold">Invite Bot Instance</a>
+        <h2 style="font-size: 1.35rem; font-weight: 700; color: #ffffff; margin-bottom: 10px;">No Guilds Available</h2>
+        <p style="color: #9ca3af; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">You do not currently possess administrative or server management permissions on any servers running Anko Uguisu.</p>
+        <div>
+          <a href="{{ invite_url if invite_url else '#' }}" class="btn btn--gold" style="background: #f59e0b; color: #1e1f22; padding: 12px 28px; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-block; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); transition: transform 0.2s ease;">Invite Bot Instance</a>
         </div>
       </div>
     {% endif %}
 
   </div>
 </main>
+
+<style>
+  .dashboard-server-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    background: #313338 !important;
+    box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.3) !important;
+  }
+  .dashboard-server-card:hover .card-arrow-wrapper {
+    background: #3b82f6 !important;
+    color: #ffffff !important;
+    border-color: #3b82f6 !important;
+    transform: translateX(2px);
+  }
+  .btn--gold:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+  }
+</style>
 {% endblock %}
