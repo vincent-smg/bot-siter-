@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-
 {% block title %}{{ guild.name }} — Dashboard — Anko Uguisu{% endblock %}
-
 {% block content %}
 
 {% set icon = guild | guild_icon_url %}
@@ -17,25 +15,18 @@
   {{ section_icons.get(id, section_icons['welcome']) | safe }}
 {% endmacro %}
 
-<header class="dash-hero dash-hero--guild">
-  <div class="dash-hero__glow dash-hero__glow--ember"></div>
-  <div class="container dash-guild-header">
-
-    <div class="dash-guild-header__icon-wrap">
-      {% if icon %}
-        <img class="dash-guild-header__icon" src="{{ icon }}" alt="">
-      {% else %}
-        <div class="dash-guild-header__icon dash-guild-header__icon--placeholder">
-          {{ guild.name[0] | upper }}
-        </div>
-      {% endif %}
-    </div>
-
-    <div class="dash-guild-header__info">
-      <span class="page-head__eyebrow">Server Dashboard</span>
-
-      <h1 style="font-size: clamp(1.6rem, 4vw, 2.4rem);">{{ guild.name }}</h1>
-
+<div class="page-head">
+  <span class="page-head__eyebrow">Server Dashboard</span>
+  <div class="dash-guild-heading">
+    {% if icon %}
+      <img class="dash-guild-heading__icon" src="{{ icon }}" alt="">
+    {% else %}
+      <div class="dash-guild-heading__icon dash-guild-heading__icon--placeholder" style="width:56px;height:56px;border-radius:14px;">
+        {{ guild.name[0] | upper }}
+      </div>
+    {% endif %}
+    <div>
+      <h1>{{ guild.name }}</h1>
       <p>
         Signed in with
         {% if is_admin %}
@@ -45,14 +36,14 @@
         {% endif %}
         permissions.
       </p>
-
-      <a class="btn btn--outline" href="{{ url_for('dashboard') }}">&larr; All servers</a>
     </div>
-
   </div>
-</header>
+  <div style="margin-top: 18px;">
+    <a class="btn btn--outline" href="{{ url_for('dashboard') }}">&larr; All servers</a>
+  </div>
+</div>
 
-<section class="section" style="padding-top: 32px;">
+<section class="section" style="padding-top: 0;">
   <div class="container dash-guild-layout">
 
     <aside class="dash-section-nav">
@@ -61,12 +52,8 @@
         {% for section in sections %}
           <li>
             <a href="#{{ section.id }}" class="dash-section-nav__link" data-section="{{ section.id }}">
-              <span class="dash-section-nav__icon">
-                {{ section_icon(section.id) }}
-              </span>
-
+              <span class="dash-section-nav__icon">{{ section_icon(section.id) }}</span>
               {{ section.label }}
-
               {% if section.required_permission == "administrator" %}
                 <span class="dash-section-nav__admin-dot" title="Admin only"></span>
               {% endif %}
@@ -81,10 +68,7 @@
         <div class="settings-card" id="{{ section.id }}">
 
           <div class="settings-card__head">
-            <div class="settings-card__icon">
-              {{ section_icon(section.id) }}
-            </div>
-
+            <div class="settings-card__icon">{{ section_icon(section.id) }}</div>
             <div>
               <h2>
                 {{ section.label }}
@@ -98,19 +82,15 @@
 
           <form method="post" action="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
             <input type="hidden" name="section" value="{{ section.id }}">
-
-            {# CSRF support (if Flask-WTF enabled) #}
             {% if csrf_token is defined %}
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             {% endif %}
 
             {% for field in section.fields %}
               <div class="field">
-
                 {% if field.type == "toggle" %}
                   <label class="toggle">
-                    <input type="checkbox"
-                           name="{{ field.key }}"
+                    <input type="checkbox" name="{{ field.key }}"
                            {% if settings.get(field.key) %}checked{% endif %}>
                     <span class="track"></span>
                     {{ field.label }}
@@ -118,33 +98,25 @@
 
                 {% elif field.type == "textarea" %}
                   <label for="field-{{ field.key }}">{{ field.label }}</label>
-                  <textarea id="field-{{ field.key }}"
-                            name="{{ field.key }}"
+                  <textarea id="field-{{ field.key }}" name="{{ field.key }}"
                             placeholder="{{ field.placeholder or '' }}">{{ settings.get(field.key, "") }}</textarea>
 
                 {% elif field.type == "list" %}
                   <label for="field-{{ field.key }}">{{ field.label }}</label>
-
                   {% set list_value = settings.get(field.key, []) %}
-                  <textarea id="field-{{ field.key }}"
-                            name="{{ field.key }}"
+                  <textarea id="field-{{ field.key }}" name="{{ field.key }}"
                             style="display: none;">{{ list_value if list_value is string else (list_value | join("\n")) }}</textarea>
-
                   <div class="tag-input-container" data-field-key="{{ field.key }}">
                     <div class="tag-list"></div>
                     <div class="tag-input-row">
-                      <input type="text"
-                             class="tag-input-field"
-                             placeholder="Type a word and press Enter...">
+                      <input type="text" class="tag-input-field" placeholder="Type a word and press Enter...">
                       <button type="button" class="btn btn--outline btn--sm tag-add-btn">Add</button>
                     </div>
                   </div>
 
                 {% else %}
                   <label for="field-{{ field.key }}">{{ field.label }}</label>
-                  <input type="text"
-                         id="field-{{ field.key }}"
-                         name="{{ field.key }}"
+                  <input type="text" id="field-{{ field.key }}" name="{{ field.key }}"
                          placeholder="{{ field.placeholder or '' }}"
                          value="{{ settings.get(field.key, '') }}">
                 {% endif %}
@@ -152,16 +124,12 @@
                 {% if field.help %}
                   <div class="help">{{ field.help }}</div>
                 {% endif %}
-
               </div>
             {% endfor %}
 
             <div class="settings-card__footer">
-              <button type="submit" class="btn btn--gold">
-                Save {{ section.label }}
-              </button>
+              <button type="submit" class="btn btn--gold">Save {{ section.label }}</button>
             </div>
-
           </form>
 
         </div>
@@ -176,54 +144,40 @@
 {% block scripts %}
 <script>
 (function () {
-
   const navLinks = document.querySelectorAll('.dash-section-nav__link');
   const cards = document.querySelectorAll('.settings-card[id]');
-
   if (!navLinks.length || !cards.length) return;
 
   function setActive(id) {
     navLinks.forEach(link => {
-      link.classList.toggle(
-        'is-active',
-        link.getAttribute('data-section') === id
-      );
+      link.classList.toggle('is-active', link.getAttribute('data-section') === id);
     });
   }
 
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) setActive(entry.target.id);
-    });
+    entries.forEach(entry => { if (entry.isIntersecting) setActive(entry.target.id); });
   }, { rootMargin: '-20% 0px -60% 0px' });
 
   cards.forEach(card => observer.observe(card));
 
-  // smoother + keeps URL hash
   navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-
       const target = document.querySelector(link.getAttribute('href'));
       if (!target) return;
-
       history.pushState(null, "", link.getAttribute('href'));
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 
-  // set initial active section
   if (cards.length) setActive(cards[0].id);
 
-  // Handle list/tag inputs
   document.querySelectorAll('.tag-input-container').forEach(function (container) {
     const fieldKey = container.getAttribute('data-field-key');
     const textarea = document.getElementById('field-' + fieldKey);
     const tagList = container.querySelector('.tag-list');
     const inputField = container.querySelector('.tag-input-field');
     const addBtn = container.querySelector('.tag-add-btn');
-
-    // Get current tags from textarea
     let tags = textarea.value.split('\n').map(t => t.trim()).filter(t => t.length > 0);
 
     function renderTags() {
@@ -231,57 +185,29 @@
       tags.forEach(function (tagText, index) {
         const tagEl = document.createElement('span');
         tagEl.className = 'tag';
-
         const textSpan = document.createElement('span');
         textSpan.className = 'tag-text';
         textSpan.textContent = tagText;
-
         const removeBtn = document.createElement('span');
         removeBtn.className = 'tag-remove';
         removeBtn.innerHTML = '&times;';
-        removeBtn.addEventListener('click', function () {
-          removeTag(index);
-        });
-
+        removeBtn.addEventListener('click', function () { tags.splice(index, 1); renderTags(); });
         tagEl.appendChild(textSpan);
         tagEl.appendChild(removeBtn);
         tagList.appendChild(tagEl);
       });
-      // Update hidden textarea
       textarea.value = tags.join('\n');
     }
 
     function addTag() {
       const val = inputField.value.trim();
-      if (val && !tags.includes(val)) {
-        tags.push(val);
-        renderTags();
-        inputField.value = '';
-      }
+      if (val && !tags.includes(val)) { tags.push(val); renderTags(); inputField.value = ''; }
     }
 
-    function removeTag(index) {
-      tags.splice(index, 1);
-      renderTags();
-    }
-
-    // Add on enter key or comma key
-    inputField.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        addTag();
-      }
-    });
-
-    addBtn.addEventListener('click', function (e) {
-      e.preventDefault();
-      addTag();
-    });
-
-    // Initial render
+    inputField.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); addTag(); } });
+    addBtn.addEventListener('click', function (e) { e.preventDefault(); addTag(); });
     renderTags();
   });
-
 })();
 </script>
 {% endblock %}
