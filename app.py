@@ -47,7 +47,6 @@ DEFAULT_STATUS = {
 
 
 # Discord permission bitflags we care about for the dashboard.
-# Full list: https://discord.com/developers/docs/topics/permissions
 PERM_ADMINISTRATOR = 0x8
 PERM_MANAGE_GUILD = 0x20
 
@@ -84,18 +83,6 @@ def create_app():
 
     # ------------------------------------------------------------------
     # Trust Render's proxy headers.
-    #
-    # Render (and the Cloudflare layer in front of it) terminates TLS and
-    # forwards requests to your app over plain HTTP, adding
-    # X-Forwarded-For / X-Forwarded-Proto / X-Forwarded-Host headers.
-    # Without this, Flask thinks every request is plain HTTP from
-    # Render's internal IP, which breaks:
-    #   - secure cookies (SESSION_COOKIE_SECURE)
-    #   - https:// OAuth redirect URIs
-    #   - rate limiting / logging by real client IP
-    #
-    # x_for=1 / x_proto=1 / x_host=1 means "trust exactly one layer of
-    # proxy" for each of those headers, which matches Render's setup.
     # ------------------------------------------------------------------
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
@@ -107,12 +94,6 @@ def create_app():
 
     # ------------------------------------------------------------------
     # Rate limiting
-    #
-    # Render's own DDoS protection handles large-scale floods, but
-    # per-route rate limiting protects specific sensitive endpoints
-    # (login/OAuth, the bot status webhook) from abuse, brute-forcing,
-    # or accidental loops. Limits are keyed on the real client IP thanks
-    # to ProxyFix above.
     # ------------------------------------------------------------------
     limiter = Limiter(
         get_remote_address,
@@ -192,11 +173,6 @@ def create_app():
         return resp.json()
 
     def fetch_discord_guilds(access_token):
-        """
-        Returns the list of guilds the logged-in user is in, each with
-        an 'id', 'name', 'icon', and a 'permissions' bitfield string
-        describing that user's permissions in that guild.
-        """
         headers = {"Authorization": f"Bearer {access_token}"}
         resp = requests.get(
             f"{app.config['DISCORD_API_BASE_URL']}/users/@me/guilds",
@@ -207,12 +183,6 @@ def create_app():
         return resp.json()
 
     def get_valid_access_token(user):
-        """
-        Returns a usable Discord access token for this user, refreshing
-        it first if it has expired. Returns None if refreshing fails
-        (e.g. the user revoked access) - callers should treat that as
-        "needs to sign in again".
-        """
         if user.token_expires_at and datetime.utcnow() >= user.token_expires_at:
             if not user.refresh_token:
                 return None
@@ -256,9 +226,7 @@ def create_app():
         return user
 
     # ------------------------------------------------------------------
-    # Before/after request: load current user + periodically verify
-    # their Discord username hasn't changed. If it has, log them out so
-    # the new username is picked up next time they sign in.
+    # Before request hooks
     # ------------------------------------------------------------------
     @app.before_request
     def load_logged_in_user():
@@ -279,7 +247,6 @@ def create_app():
         if datetime.utcnow() - last_checked < timedelta(seconds=interval):
             return
 
-        # Time to re-check the user's Discord username
         access_token = user.access_token
         try:
             if user.token_expires_at and datetime.utcnow() >= user.token_expires_at:
@@ -298,16 +265,12 @@ def create_app():
 
             discord_user = fetch_discord_user(access_token)
         except Exception:
-            # If Discord can't be reached or the token is invalid, just
-            # skip the check this time rather than breaking the request.
             return
 
         new_username = discord_user.get("username")
         new_global_name = discord_user.get("global_name")
 
         if new_username != user.username or new_global_name != user.global_name:
-            # Username changed since last login - save the new value but
-            # sign the user out so they reauthenticate with fresh data.
             user.username = new_username
             user.global_name = new_global_name
             user.avatar_hash = discord_user.get("avatar")
@@ -378,7 +341,12 @@ def create_app():
         try:
             token_data = exchange_code_for_token(code)
             discord_user = fetch_discord_user(token_data["access_token"])
-        except requests.RequestException:
+        except requests.RequestException as e:
+            # Prints the raw Discord HTTP status response directly into Render logs
+            print(f"--- [DEBUG] DISCORD API EXCHANGE ERROR: {e} ---", flush=True)
+            if hasattr(e, 'response') and e.response is not None:
+                print(f"--- [DEBUG] RESPONSE BODY: {e.response.text} ---", flush=True)
+                
             flash("Could not reach Discord. Please try again.")
             return redirect(url_for("index"))
 
@@ -434,14 +402,6 @@ def create_app():
 
     # ------------------------------------------------------------------
     # Dashboard
-    #
-    # /dashboard         - lists servers the signed-in user can manage
-    #                       (Manage Server or Administrator) where Anko
-    #                       is also present.
-    # /dashboard/<id>     - settings for one server. Which settings
-    #                       sections are shown depends on the user's
-    #                       permission level in that server, per
-    #                       DASHBOARD_SECTIONS in data/dashboard_settings.py.
     # ------------------------------------------------------------------
     @app.route("/dashboard")
     def dashboard():
@@ -480,7 +440,6 @@ def create_app():
                 )
 
         managed_guilds.sort(key=lambda gd: gd["name"].lower())
-
         return render_template("dashboard.html", guilds=managed_guilds)
 
     @app.route("/dashboard/<guild_id>", methods=["GET", "POST"])
@@ -520,9 +479,6 @@ def create_app():
         if settings is None:
             settings = GuildSettings(guild_id=guild_id, data={})
 
-        # Only show sections this user is allowed to edit.
-        # "manage_guild" sections are visible to anyone with Manage Server
-        # or Administrator; "administrator" sections need full admin.
         visible_sections = [
             section
             for section in DASHBOARD_SECTIONS
@@ -569,8 +525,7 @@ def create_app():
         )
 
     # ------------------------------------------------------------------
-    # Status API - the bot process pushes live stats here, the status
-    # page polls it for live numbers.
+    # Status API
     # ------------------------------------------------------------------
     @app.route("/api/status", methods=["GET"])
     @limiter.limit("30 per minute")
@@ -603,9 +558,7 @@ def create_app():
         return jsonify({"ok": True})
 
     # ------------------------------------------------------------------
-    # Guild config API - the dashboard writes settings here via the web
-    # UI (see /dashboard/<guild_id> above); the bot reads them from here
-    # to apply on its side (welcome messages, word filter, etc).
+    # Guild config API
     # ------------------------------------------------------------------
     @app.route("/api/guild-config/<guild_id>", methods=["GET"])
     @limiter.limit("60 per minute")
