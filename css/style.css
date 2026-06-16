@@ -2163,3 +2163,312 @@ p {
   display: flex;
   gap: 10px;
 }
+/* ==========================================================================
+   ANKO UGUISU DASHBOARD SYSTEM STYLES
+   ========================================================================== */
+
+/* 1. Dashboard Server List Overview (dashboard.html) */
+.dashboard-list-card {
+  background-color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  margin-top: 24px;
+}
+
+.server-list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--line);
+  transition: background-color 0.2s ease;
+}
+
+.server-list-row:last-child {
+  border-bottom: none;
+}
+
+.server-list-row:hover {
+  background-color: var(--ink-raised);
+}
+
+.server-meta-side {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.server-avatar-img, 
+.server-avatar-placeholder {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}
+
+.server-avatar-placeholder {
+  background-color: var(--ink-raised);
+  color: var(--gold-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.server-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.server-title-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Dashboard Management Badges */
+.server-role-badge {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  padding: 3px 10px;
+  border-radius: 999px;
+  width: max-content;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.role--admin {
+  background: rgba(226, 117, 74, 0.15);
+  color: var(--ember);
+  border: 1px solid rgba(226, 117, 74, 0.3);
+}
+
+.role--manage {
+  background: rgba(216, 168, 92, 0.15);
+  color: var(--gold);
+  border: 1px solid rgba(216, 168, 92, 0.3);
+}
+
+.dashboard-empty-card {
+  background-color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 48px;
+  text-align: center;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-empty-card h2 {
+  margin-bottom: 12px;
+}
+
+.dashboard-empty-card p {
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+
+/* 2. Guild Settings View (dashboard_guild.html) */
+.settings-module-card {
+  background-color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.settings-module-card:last-child {
+  margin-bottom: 0;
+}
+
+.settings-card-head {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.settings-card-head h2 {
+  font-size: 1.4rem;
+  color: var(--gold-soft);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-only-pill {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  background-color: rgba(226, 117, 74, 0.15);
+  color: var(--ember);
+  border: 1px solid rgba(226, 117, 74, 0.3);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+.settings-card-head p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  margin-top: 6px;
+}
+
+
+/* 3. Custom Form Fields & Inputs Layout */
+.form-field-wrapper {
+  margin-bottom: 20px;
+}
+
+.form-field-wrapper:last-child {
+  margin-bottom: 0;
+}
+
+.form-field-wrapper label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.dashboard-native-input, 
+.dashboard-native-textarea {
+  width: 100%;
+  background-color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-native-input:focus, 
+.dashboard-native-textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(216, 168, 92, 0.15);
+}
+
+.dashboard-native-textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.field-help-hint {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+
+/* 4. Custom Switch Toggles */
+.dashboard-toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  margin-top: 4px;
+}
+
+.dashboard-toggle-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch-track {
+  width: 46px;
+  height: 24px;
+  background-color: var(--ink-raised);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  position: relative;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.toggle-switch-track::before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--text-muted);
+  border-radius: 50%;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.dashboard-toggle-switch input:checked + .toggle-switch-track {
+  background-color: rgba(147, 160, 107, 0.2);
+  border-color: var(--sage);
+}
+
+.dashboard-toggle-switch input:checked + .toggle-switch-track::before {
+  transform: translateX(22px);
+  background-color: var(--sage);
+}
+
+.toggle-switch-label-text {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+
+/* 5. Array Tag Pools Controls */
+.tag-array-container {
+  background-color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+
+.tag-array-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.tag-array-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--ink-raised);
+  border: 1px solid var(--line);
+  color: var(--text);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.tag-array-pill-remove {
+  cursor: pointer;
+  color: var(--text-muted);
+  font-weight: bold;
+}
+
+.tag-array-pill-remove:hover {
+  color: var(--ember);
+}
+
+.tag-array-action-row {
+  display: flex;
+  gap: 10px;
+}
+
+.tag-array-action-row .dashboard-native-input {
+  flex: 1;
+}
