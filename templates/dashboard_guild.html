@@ -3,7 +3,7 @@
 {% block title %}{{ guild.name }} Configuration | Anko Uguisu{% endblock %}
 
 {% block content %}
-<header class="page-head" style="background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(28, 18, 12, 0) 100%); padding: 50px 0 30px 0;">
+<header class="page-head" style="background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(22, 17, 15, 0) 100%); padding: 50px 0 30px 0;">
   <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
     <div class="dash-guild-heading" style="display: flex; align-items: center; gap: 24px;">
       {% if guild.icon %}
@@ -115,90 +115,83 @@
 </div>
 
 <style>
-  /* Base structural container changes to override cool grays */
-  .dash-section-nav {
-    background: #261a12 !important; /* Warm panel brown */
-    border: 1px solid rgba(226, 167, 111, 0.08) !important;
-  }
-  
-  .settings-block {
-    background: #261a12 !important; /* Warm panel brown */
-    border: 1px solid rgba(226, 167, 111, 0.08) !important;
+  /* Base structural: Darker Coffee Brown */
+  .dash-section-nav, .settings-block {
+    background: #211a17 !important; 
+    border: 1px solid rgba(198, 138, 82, 0.1) !important;
   }
 
-  /* Form Inputs (Deeper background contrast) */
+  /* Form Inputs: Deepest Coffee Background */
   .dashboard-native-input, 
   .dashboard-native-textarea,
   .tag-array-container,
   .dashboard-toggle-switch {
-    background: #1c120c !important; /* Base deep background color */
-    border: 1px solid rgba(226, 167, 111, 0.15) !important;
-    color: #fcefe3 !important; /* Off-white warm text */
+    background: #16110f !important;
+    border: 1px solid rgba(198, 138, 82, 0.2) !important;
+    color: #e7dfda !important;
   }
 
-  /* Text elements mapping */
+  /* Text: Neutral Coffee Cream and Muted Sepia */
   .settings-block__title, h1, h2 {
-    color: #fcefe3 !important;
+    color: #e7dfda !important;
   }
   
   .settings-block__desc, .field-help-hint, .dash-section-nav__label {
-    color: #a08a7c !important; /* Muted sepia text */
+    color: #8e8076 !important; 
   }
 
-  /* Left Navigation Interaction Details */
+  /* Navigation: Active state matching the Landing Page Gold */
   .dash-section-nav__link {
-    color: #a08a7c !important;
+    color: #8e8076 !important;
   }
   
   .dash-section-nav__link.is-active {
-    background: #38271b !important; /* Distinct selected brown layer */
-    color: #f3b982 !important; /* Warm theme gold text */
+    background: #2d2521 !important; 
+    color: #c68a52 !important; 
   }
   
   .dash-section-nav__link.is-active .dash-section-nav__icon {
-    color: #f3b982 !important;
-    opacity: 1 !important;
+    color: #c68a52 !important;
   }
   
   .dash-section-nav__link:hover:not(.is-active) {
-    background: rgba(243, 185, 130, 0.04) !important;
-    color: #fcefe3 !important;
+    background: rgba(198, 138, 82, 0.05) !important;
+    color: #e7dfda !important;
   }
 
-  /* Buttons & Save Guards */
+  /* Buttons: Using the specific landing page Gold */
   .settings-action-bar {
-    background: #160e0a !important; /* Super dark footer anchor */
-    border: 1px solid rgba(243, 185, 130, 0.1) !important;
+    background: #16110f !important;
+    border: 1px solid rgba(198, 138, 82, 0.1) !important;
   }
   
   .btn--gold {
-    background: #e2a76f !important; /* Signature button gold */
-    color: #1c120c !important; /* Dark text inside button */
+    background: #c68a52 !important;
+    color: #16110f !important;
   }
-  
+
   .btn--gold:hover {
-    background: #f3b982 !important;
+    background: #d79b64 !important;
   }
 
   .tag-add-btn {
-    border-color: #e2a76f !important;
-    color: #e2a76f !important;
+    border-color: #c68a52 !important;
+    color: #c68a52 !important;
   }
   
   .tag-add-btn:hover {
-    background: #e2a76f !important;
-    color: #1c120c !important;
+    background: #c68a52 !important;
+    color: #16110f !important;
   }
 
   .tag-array-pill {
-    background: #38271b !important;
-    border: 1px solid rgba(226, 167, 111, 0.15) !important;
-    color: #fcefe3 !important;
+    background: #2d2521 !important;
+    border: 1px solid rgba(198, 138, 82, 0.15) !important;
+    color: #e7dfda !important;
   }
 
-  /* Toggles matching your theme green or gold */
   .toggle-input:checked + .toggle-switch-track {
-    background-color: #e2a76f !important; /* Or use a soft sage green if preferred */
+    background-color: #c68a52 !important;
   }
 </style>
 
