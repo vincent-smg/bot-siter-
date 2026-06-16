@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Anko Uguisu{% endblock %}
+
 {% block content %}
 <header class="page-head">
   <div class="container">
@@ -6,21 +10,23 @@
     <p>Select a managed server instance from the array below to modify configurations and channel parameters.</p>
   </div>
 </header>
+
 <main class="section" style="padding-top: 0;">
   <div class="container">
     
-    <!-- User Profile Banner Row -->
     <div class="dash-user-strip">
       <div class="dash-user-strip__left">
-        {% if current_user.avatar %}
-          <img class="dash-user-strip__avatar" src="https://cdn.discordapp.com/avatars/{{ current_user.id }}/{{ current_user.avatar }}.png?size=80" alt="{{ current_user.username }}">
+        {% if current_user and current_user.avatar %}
+          <img class="dash-user-strip__avatar" src="https://cdn.discordapp.com/avatars/{{ current_user.id }}/{{ current_user.avatar }}.png?size=80" alt="User Avatar">
         {% else %}
-          <div class="dash-user-strip__avatar dashboard-server-icon">{{ current_user.username[0] | upper if current_user.username else 'U' }}</div>
+          <div class="dash-user-strip__avatar dashboard-server-icon" style="border-radius: 50%;">
+            {{ current_user.username[0] | upper if (current_user and current_user.username) else 'U' }}
+          </div>
         {% endif %}
         <div>
           <div class="dash-user-strip__name">
-            {{ current_user.username }}
-            {% if current_user.discriminator and current_user.discriminator != '0' %}
+            {{ current_user.username if current_user else 'Authorized User' }}
+            {% if current_user and current_user.discriminator and current_user.discriminator != '0' %}
               <span style="color: var(--text-muted); font-weight: 400;">#{{ current_user.discriminator }}</span>
             {% endif %}
           </div>
@@ -28,18 +34,17 @@
         </div>
       </div>
       <div class="dash-user-strip__right">
-        <span class="dash-user-strip__count">{{ guilds | length }}</span>
+        <span class="dash-user-strip__count">{{ guilds | length if guilds else 0 }}</span>
         <span class="dash-user-strip__count-label">Available Servers</span>
       </div>
     </div>
 
-    <!-- Section Heading -->
     <div class="dash-section-label">
       <span>Managed Servers</span>
-      <span class="dash-section-count">{{ guilds | length }}</span>
+      <span class="dash-section-count">{{ guilds | length if guilds else 0 }}</span>
     </div>
 
-    {% if guilds | length > 0 %}
+    {% if guilds and guilds | length > 0 %}
       <div class="dashboard-grid">
         {% for guild in guilds %}
           <a class="dashboard-server-card" href="{{ url_for('dashboard_guild', guild_id=guild.id) }}">
@@ -47,7 +52,7 @@
             {% if guild.icon %}
               <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=96" alt="{{ guild.name }}">
             {% else %}
-              <div class="dashboard-server-icon">{{ guild.name[0] | upper }}</div>
+              <div class="dashboard-server-icon">{{ guild.name[0] | upper if guild.name else 'G' }}</div>
             {% endif %}
             
             <div class="info">
@@ -59,7 +64,6 @@
               {% endif %}
             </div>
             
-            <!-- Standardized Arrow SVG -->
             <svg class="dashboard-server-card__arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
             </svg>
@@ -76,7 +80,7 @@
         <h2>No Guilds Available</h2>
         <p>You do not currently possess administrative or management permissions on any servers.</p>
         <div style="margin-top: 24px;">
-          <a href="#" class="btn btn--gold">Invite Bot Instance</a>
+          <a href="{{ invite_url if invite_url else '#' }}" class="btn btn--gold">Invite Bot Instance</a>
         </div>
       </div>
     {% endif %}
