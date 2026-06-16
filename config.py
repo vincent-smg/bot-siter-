@@ -1,6 +1,7 @@
 import os
 
-
+from werkzeug.middleware.proxy_fix import ProxyFix
+from flask import Flask
 class Config:
     """
     Central configuration, loaded from environment variables.
@@ -19,8 +20,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
    
-    from werkzeug.middleware.proxy_fix import ProxyFix
-    from flask import Flask
+    
 
     app = Flask(__name__)
 
