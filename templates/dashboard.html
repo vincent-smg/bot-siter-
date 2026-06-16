@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Dashboard — Anko Uguisu{% endblock %}
-{% block content %}
 
+{% block content %}
 <div class="page-head">
   <span class="page-head__eyebrow">Control Panel</span>
   <h1>Your <span class="accent">Dashboard</span></h1>
@@ -30,11 +30,10 @@
     {% endif %}
 
     {% if guilds %}
-      <div class="dash-section-label">
+      <div class="dash-section-label" style="margin-top: 32px; color: #a39284; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">
         <span>Managed Servers</span>
       </div>
       
-      <!-- Unified Master Card Container for Server Rows -->
       <div class="dashboard-list-card">
         {% for guild in guilds %}
           {% set icon = guild | guild_icon_url %}
@@ -64,7 +63,7 @@
     {% else %}
       <div class="dashboard-empty-card">
         <h2>No servers found</h2>
-        <p>We couldn't find any servers where you have Manage Server permissions and Anko is present. Invite Anko to your server first, then come back here.</p>
+        <p style="color: #a39284; margin-bottom: 24px;">We couldn't find any servers where you have Manage Server permissions and Anko is present. Invite Anko to your server first, then come back here.</p>
         <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
           <a class="btn btn--gold btn--lg" href="{{ invite_url }}" target="_blank" rel="noopener">
             Invite Anko
