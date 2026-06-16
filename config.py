@@ -39,7 +39,7 @@ class Config:
     DISCORD_CLIENT_ID = os.environ.get("DISCORD_CLIENT_ID", "")
     DISCORD_CLIENT_SECRET = os.environ.get("DISCORD_CLIENT_SECRET", "")
     DISCORD_REDIRECT_URI = os.environ.get(
-        "DISCORD_REDIRECT_URI", "http://localhost:5000/callback"
+        "DISCORD_REDIRECT_URI", "https://bot-siter.onrender.com/callback"
     )
 
     # Discord OAuth2 endpoints
