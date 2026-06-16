@@ -151,17 +151,17 @@ p {
 .nav__brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-shrink: 0;
 }
 
 .nav__logo {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
   object-fit: cover;
   border: 1px solid var(--line);
-  box-shadow: 0 0 0 2px rgba(216, 168, 92, 0.12);
+  box-shadow: 0 0 0 3px rgba(216, 168, 92, 0.12);
 }
 
 .nav__title {
@@ -1204,76 +1204,96 @@ p {
 }
 
 /* =====================================================================
-   Dashboard — hero header
+   Utility colours used in dashboard templates
+   ===================================================================== */
+
+.accent          { color: var(--gold); }
+.color-gold      { color: var(--gold); }
+.color-ember     { color: var(--ember); }
+
+/* =====================================================================
+   Button extras (sm size used in tag input)
+   ===================================================================== */
+
+.btn--sm {
+  padding: 6px 14px;
+  font-size: 0.82rem;
+}
+
+/* =====================================================================
+   Dashboard hero banner  (dashboard.html + dashboard_guild.html)
    ===================================================================== */
 
 .dash-hero {
   position: relative;
   overflow: hidden;
-  padding: 60px 0 48px;
+  padding: 56px 0 48px;
   border-bottom: 1px solid var(--line);
-  background: var(--ink-soft);
 }
 
+/* ambient glow layer */
 .dash-hero__glow {
   position: absolute;
   inset: -30% -10% auto -10%;
   height: 420px;
   background: radial-gradient(
-    circle at 30% 40%,
+    circle at 60% 30%,
     rgba(216, 168, 92, 0.14),
-    rgba(216, 168, 92, 0.04) 50%,
+    rgba(226, 117, 74, 0.06) 50%,
     transparent 70%
   );
   pointer-events: none;
 }
 
+/* ember-tinted glow variant used on the guild page */
 .dash-hero__glow--ember {
   background: radial-gradient(
-    circle at 20% 50%,
+    circle at 40% 40%,
     rgba(226, 117, 74, 0.16),
     rgba(216, 168, 92, 0.06) 50%,
     transparent 70%
   );
 }
 
+/* hero inner layout: text left, user-card right */
 .dash-hero__inner {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 32px;
+  gap: 40px;
   flex-wrap: wrap;
 }
 
-.dash-hero__text h1 {
-  font-size: clamp(1.9rem, 4vw, 2.8rem);
-  margin-bottom: 12px;
-  line-height: 1.1;
+.dash-hero__text {
+  flex: 1 1 320px;
 }
 
-.dash-hero__text h1 .accent {
-  color: var(--gold);
+.dash-hero__text h1 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  line-height: 1.1;
+  margin: 10px 0 14px;
 }
 
 .dash-hero__text p {
   color: var(--text-muted);
-  max-width: 480px;
   font-size: 1rem;
-  margin-top: 4px;
+  max-width: 480px;
 }
 
-/* User welcome card in dashboard hero */
+/* =====================================================================
+   Dashboard user card  (top-right of /dashboard hero)
+   ===================================================================== */
+
 .dash-user-card {
   display: flex;
   align-items: center;
   gap: 14px;
-  background: rgba(26, 20, 16, 0.6);
+  padding: 18px 22px;
+  background: var(--ink-soft);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 18px 22px;
   flex-shrink: 0;
-  backdrop-filter: blur(6px);
-  min-width: 220px;
 }
 
 .dash-user-card__avatar {
@@ -1281,26 +1301,24 @@ p {
   height: 52px;
   border-radius: 999px;
   object-fit: cover;
-  border: 2px solid var(--gold);
-  box-shadow: 0 0 0 3px rgba(216, 168, 92, 0.15);
-  flex-shrink: 0;
+  border: 2px solid var(--line);
 }
 
 .dash-user-card__name {
   font-weight: 700;
   font-size: 1rem;
+  color: var(--text);
 }
 
 .dash-user-card__sub {
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   color: var(--text-muted);
   margin-top: 2px;
 }
 
 .dash-user-card__stat {
-  margin-left: auto;
   text-align: center;
-  padding-left: 14px;
+  padding-left: 18px;
   border-left: 1px solid var(--line);
 }
 
@@ -1313,20 +1331,24 @@ p {
 }
 
 .dash-user-card__stat-label {
-  font-size: 0.72rem;
+  display: block;
+  font-size: 0.78rem;
   color: var(--text-muted);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  margin-top: 4px;
+  white-space: nowrap;
 }
 
-/* Section label + count row */
+/* =====================================================================
+   Section label row  ("Managed Servers  3")
+   ===================================================================== */
+
 .dash-section-label {
   display: flex;
   align-items: center;
   gap: 10px;
   font-family: var(--font-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.18em;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 20px;
@@ -1336,21 +1358,22 @@ p {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
+  min-width: 22px;
   height: 22px;
-  border-radius: 999px;
+  padding: 0 7px;
   background: rgba(216, 168, 92, 0.14);
   color: var(--gold);
-  font-size: 0.74rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
 }
 
 /* =====================================================================
-   Dashboard — server cards grid
+   Dashboard server grid  (/dashboard)
    ===================================================================== */
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
 }
 
@@ -1358,53 +1381,46 @@ p {
   display: flex;
   align-items: center;
   gap: 16px;
+  padding: 18px 20px;
   background: var(--ink-soft);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 20px;
-  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.dashboard-server-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(216, 168, 92, 0.04), transparent 60%);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.18s ease, transform 0.18s ease,
+    background-color 0.18s ease;
 }
 
 .dashboard-server-card:hover {
   border-color: var(--gold);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  background: var(--ink-raised);
 }
 
-.dashboard-server-card:hover::before {
-  opacity: 1;
-}
-
-.dashboard-server-card img,
-.dashboard-server-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+/* guild icon image */
+.dashboard-server-card > img {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   object-fit: cover;
   flex-shrink: 0;
+  border: 1px solid var(--line);
 }
 
+/* guild icon placeholder (first letter) */
 .dashboard-server-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--ink-raised);
+  border: 1px solid var(--line);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--ink-raised);
-  color: var(--gold);
   font-family: var(--font-display);
-  font-size: 1.15rem;
-  border: 1px solid var(--line);
+  font-size: 1.35rem;
+  color: var(--gold);
+  flex-shrink: 0;
 }
 
 .dashboard-server-card .info {
@@ -1413,11 +1429,31 @@ p {
 }
 
 .dashboard-server-card .name {
-  font-weight: 700;
-  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 0.97rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-bottom: 5px;
+}
+
+.dashboard-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(216, 168, 92, 0.13);
+  color: var(--gold);
+  border: 1px solid rgba(216, 168, 92, 0.25);
+}
+
+.dashboard-badge.is-admin {
+  background: rgba(226, 117, 74, 0.13);
+  color: var(--ember);
+  border-color: rgba(226, 117, 74, 0.25);
 }
 
 .dashboard-server-card__arrow {
@@ -1433,67 +1469,56 @@ p {
   transform: translateX(3px);
 }
 
-.dashboard-badge {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 3px 9px;
-  border-radius: 999px;
-  background: rgba(216, 168, 92, 0.14);
-  color: var(--gold);
-}
+/* =====================================================================
+   Dashboard empty state
+   ===================================================================== */
 
-.dashboard-badge.is-admin {
-  background: rgba(226, 117, 74, 0.16);
-  color: var(--ember);
-}
-
-/* Empty state */
 .dashboard-empty {
   text-align: center;
-  color: var(--text-muted);
-  padding: 60px 20px;
+  padding: 80px 24px;
+  max-width: 520px;
+  margin: 0 auto;
 }
 
 .dashboard-empty__icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
+  width: 68px;
+  height: 68px;
+  border-radius: 18px;
+  background: var(--ink-soft);
+  border: 1px solid var(--line);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(216, 168, 92, 0.1);
-  color: var(--gold);
-  margin: 0 auto 20px;
+  margin: 0 auto 24px;
+  color: var(--text-muted);
 }
 
 .dashboard-empty__icon svg {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
 }
 
 .dashboard-empty h2 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
+  font-size: 1.6rem;
+  margin-bottom: 12px;
 }
 
 .dashboard-empty p {
-  max-width: 420px;
-  margin: 0 auto;
-  font-size: 0.95rem;
+  color: var(--text-muted);
+  font-size: 0.97rem;
+  line-height: 1.65;
 }
 
 /* =====================================================================
-   Dashboard Guild — header
+   Guild dashboard hero  (/dashboard/<id>)
    ===================================================================== */
 
 .dash-hero--guild {
-  padding: 48px 0 40px;
+  padding: 44px 0 40px;
 }
 
 .dash-guild-header {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 28px;
@@ -1505,59 +1530,73 @@ p {
 }
 
 .dash-guild-header__icon {
-  width: 68px;
-  height: 68px;
-  border-radius: 16px;
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
   object-fit: cover;
-  border: 2px solid var(--gold);
-  box-shadow: 0 0 0 3px rgba(216, 168, 92, 0.12), 0 8px 24px rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--line);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  display: block;
 }
 
 .dash-guild-header__icon--placeholder {
+  background: var(--ink-raised);
+  border: 2px solid var(--line);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--ink-raised);
-  color: var(--gold);
   font-family: var(--font-display);
-  font-size: 2.2rem;
+  font-size: 2rem;
+  color: var(--gold);
 }
 
 .dash-guild-header__info {
   flex: 1;
-  min-width: 0;
+}
+
+.dash-guild-header__info .page-head__eyebrow {
+  margin-bottom: 6px;
+}
+
+.dash-guild-header__info h1 {
+  margin: 6px 0 10px;
+}
+
+.dash-guild-header__info p {
+  color: var(--text-muted);
+  font-size: 0.93rem;
+  margin-bottom: 18px;
 }
 
 /* =====================================================================
-   Dashboard Guild — two-col layout
+   Guild dashboard two-column layout
+   (sticky sidebar nav + settings column)
    ===================================================================== */
 
 .dash-guild-layout {
   display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 32px;
+  grid-template-columns: 220px 1fr;
+  gap: 36px;
   align-items: start;
 }
 
-/* Sticky sidebar nav */
+/* =====================================================================
+   Section sidebar nav
+   ===================================================================== */
+
 .dash-section-nav {
   position: sticky;
   top: calc(var(--nav-height) + 20px);
-  background: var(--ink-soft);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 16px;
 }
 
 .dash-section-nav__label {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-muted);
-  padding: 0 8px 12px;
-  border-bottom: 1px solid var(--line);
   margin-bottom: 10px;
+  padding: 0 12px;
 }
 
 .dash-section-nav ul {
@@ -1572,79 +1611,73 @@ p {
 .dash-section-nav__link {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 9px 10px;
+  gap: 10px;
+  padding: 10px 12px;
   border-radius: var(--radius-sm);
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background-color 0.14s ease, color 0.14s ease;
   position: relative;
+  text-decoration: none;
 }
 
 .dash-section-nav__link:hover {
-  background: var(--ink-raised);
+  background: var(--ink-soft);
   color: var(--text);
 }
 
 .dash-section-nav__link.is-active {
-  background: rgba(216, 168, 92, 0.12);
+  background: rgba(216, 168, 92, 0.1);
   color: var(--gold);
 }
 
 .dash-section-nav__icon {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
-  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .dash-section-nav__icon svg {
-  width: 16px;
-  height: 16px;
-}
-
-.dash-section-nav__link.is-active .dash-section-nav__icon {
-  opacity: 1;
+  width: 100%;
+  height: 100%;
 }
 
 .dash-section-nav__admin-dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 999px;
   background: var(--ember);
   margin-left: auto;
   flex-shrink: 0;
 }
 
-/* Settings column */
+/* =====================================================================
+   Settings cards
+   ===================================================================== */
+
 .dash-settings-col {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
   min-width: 0;
 }
-
-/* =====================================================================
-   Dashboard — settings cards & forms
-   ===================================================================== */
 
 .settings-card {
   background: var(--ink-soft);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 28px;
-  margin-bottom: 20px;
+  overflow: hidden;
   scroll-margin-top: calc(var(--nav-height) + 24px);
-  transition: border-color 0.2s ease;
-}
-
-.settings-card:target {
-  border-color: rgba(216, 168, 92, 0.4);
 }
 
 .settings-card__head {
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  margin-bottom: 24px;
-  padding-bottom: 20px;
+  padding: 24px 28px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -1652,11 +1685,11 @@ p {
   width: 40px;
   height: 40px;
   border-radius: 10px;
+  background: rgba(216, 168, 92, 0.1);
+  color: var(--gold);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(216, 168, 92, 0.1);
-  color: var(--gold);
   flex-shrink: 0;
 }
 
@@ -1666,8 +1699,8 @@ p {
 }
 
 .settings-card__head h2 {
-  font-size: 1.15rem;
-  margin-bottom: 5px;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1679,68 +1712,89 @@ p {
   font-size: 0.9rem;
 }
 
-.settings-card__footer {
-  padding-top: 16px;
-  margin-top: 6px;
-  border-top: 1px solid var(--line);
-}
-
 .perm-tag {
+  display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.65rem;
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ember);
-  border: 1px solid var(--ember);
+  padding: 3px 9px;
   border-radius: 999px;
-  padding: 2px 9px;
+  background: rgba(226, 117, 74, 0.13);
+  color: var(--ember);
+  border: 1px solid rgba(226, 117, 74, 0.25);
+  vertical-align: middle;
 }
+
+.settings-card form {
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.settings-card__footer {
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  margin-top: 4px;
+}
+
+/* =====================================================================
+   Form fields
+   ===================================================================== */
 
 .field {
-  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
 }
 
-.field > label {
-  display: block;
+.field label {
   font-size: 0.88rem;
   font-weight: 600;
-  margin-bottom: 8px;
   color: var(--text);
-}
-
-.field .help {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-top: 6px;
 }
 
 .field input[type="text"],
 .field textarea {
-  width: 100%;
   background: var(--ink);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  padding: 10px 14px;
   color: var(--text);
   font-family: var(--font-body);
   font-size: 0.92rem;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  padding: 10px 14px;
+  transition: border-color 0.15s ease;
+  width: 100%;
+  resize: vertical;
 }
 
 .field input[type="text"]:focus,
 .field textarea:focus {
-  border-color: var(--gold);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(216, 168, 92, 0.1);
+  border-color: var(--gold);
+}
+
+.field input[type="text"]::placeholder,
+.field textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
 }
 
 .field textarea {
   min-height: 90px;
-  resize: vertical;
+}
+
+.help {
+  font-size: 0.82rem;
+  color: var(--text-muted);
   line-height: 1.5;
 }
 
-/* Toggle switch */
+/* =====================================================================
+   Toggle switch
+   ===================================================================== */
 
 .toggle {
   display: inline-flex;
@@ -1748,11 +1802,11 @@ p {
   gap: 12px;
   cursor: pointer;
   font-size: 0.92rem;
-  font-weight: 600;
   color: var(--text);
+  user-select: none;
 }
 
-.toggle input {
+.toggle input[type="checkbox"] {
   position: absolute;
   opacity: 0;
   width: 0;
@@ -1763,145 +1817,73 @@ p {
   width: 44px;
   height: 24px;
   border-radius: 999px;
-  background: var(--ink-raised);
+  background: var(--ink);
   border: 1px solid var(--line);
   position: relative;
-  transition: background 0.15s ease, border-color 0.15s ease;
   flex-shrink: 0;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
 }
 
 .toggle .track::after {
   content: "";
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 18px;
-  height: 18px;
+  left: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
   border-radius: 999px;
   background: var(--text-muted);
-  transition: transform 0.15s ease, background 0.15s ease;
+  transition: left 0.18s ease, background-color 0.18s ease;
 }
 
 .toggle input:checked + .track {
-  background: rgba(216, 168, 92, 0.2);
-  border-color: var(--gold);
+  background: rgba(147, 160, 107, 0.25);
+  border-color: var(--sage);
 }
 
 .toggle input:checked + .track::after {
-  transform: translateX(20px);
-  background: var(--gold);
+  left: calc(100% - 19px);
+  background: var(--sage);
 }
 
 /* =====================================================================
-   Responsive — dashboard
+   Tag / word-list input
    ===================================================================== */
 
-@media (max-width: 960px) {
-  .dash-guild-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .dash-section-nav {
-    position: static;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 12px 16px;
-  }
-
-  .dash-section-nav__label {
-    border-bottom: none;
-    padding-bottom: 0;
-    margin-bottom: 0;
-    padding-right: 8px;
-    border-right: 1px solid var(--line);
-    margin-right: 4px;
-  }
-
-  .dash-section-nav ul {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-
-  .dash-section-nav__link {
-    font-size: 0.82rem;
-    padding: 7px 10px;
-  }
-}
-
-@media (max-width: 640px) {
-  .settings-card {
-    padding: 20px;
-  }
-
-  .dash-hero__inner {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .dash-user-card {
-    width: 100%;
-  }
-
-  .dash-guild-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-/* Role / Admin color overrides */
-.color-ember {
-  color: var(--ember);
-}
-
-.color-gold {
-  color: var(--gold);
-}
-
-/* Dynamic Tag/Word Filter List */
 .tag-input-container {
-  background: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .tag-list {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 12px;
-}
-
-.tag-list:empty {
-  margin-bottom: 0;
+  min-height: 32px;
 }
 
 .tag {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(216, 168, 92, 0.08);
-  border: 1px solid rgba(216, 168, 92, 0.25);
-  color: var(--gold-soft);
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
   padding: 4px 10px;
+  background: rgba(216, 168, 92, 0.12);
+  border: 1px solid rgba(216, 168, 92, 0.25);
   border-radius: 999px;
-  transition: all 0.15s ease;
+  font-size: 0.84rem;
+  color: var(--gold-soft);
 }
 
-.tag:hover {
-  border-color: var(--gold);
-  background: rgba(216, 168, 92, 0.15);
+.tag-text {
+  line-height: 1;
 }
 
 .tag-remove {
   cursor: pointer;
   color: var(--text-muted);
-  font-size: 1.1rem;
+  font-size: 1rem;
   line-height: 1;
   transition: color 0.12s ease;
 }
@@ -1912,50 +1894,73 @@ p {
 
 .tag-input-row {
   display: flex;
-  gap: 10px;
+  gap: 8px;
+  align-items: center;
 }
 
 .tag-input-field {
   flex: 1;
-  background: var(--ink-soft) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: var(--radius-sm) !important;
-  padding: 8px 12px !important;
-  color: var(--text) !important;
+  background: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--text);
   font-family: var(--font-body);
-  font-size: 0.88rem;
+  font-size: 0.92rem;
+  padding: 8px 12px;
   transition: border-color 0.15s ease;
 }
 
 .tag-input-field:focus {
-  border-color: var(--gold) !important;
   outline: none;
+  border-color: var(--gold);
 }
 
-.btn--sm {
-  padding: 8px 16px;
-  font-size: 0.84rem;
+.tag-input-field::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
 }
 
-/* Command usage parameters highlighting */
-.cmd-param {
-  font-family: var(--font-mono);
-  font-size: 0.85em;
-  padding: 2px 6px;
-  border-radius: 4px;
-  display: inline-block;
-  margin: 0 2px;
-  font-weight: 500;
+/* =====================================================================
+   Responsive — dashboard
+   ===================================================================== */
+
+@media (max-width: 860px) {
+  .dash-guild-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .dash-section-nav {
+    position: static;
+  }
+
+  .dash-section-nav ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .dash-section-nav__link {
+    flex-direction: row;
+    padding: 8px 12px;
+  }
+
+  .dash-hero__inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
-.cmd-param--required {
-  background: rgba(226, 117, 74, 0.12);
-  color: var(--ember);
-  border: 1px solid rgba(226, 117, 74, 0.2);
-}
+@media (max-width: 640px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
 
-.cmd-param--optional {
-  background: rgba(216, 168, 92, 0.12);
-  color: var(--gold-soft);
-  border: 1px solid rgba(216, 168, 92, 0.25);
+  .dash-user-card {
+    width: 100%;
+  }
+
+  .settings-card__head,
+  .settings-card form {
+    padding: 18px 18px;
+  }
 }
