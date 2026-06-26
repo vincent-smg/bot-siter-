@@ -37,6 +37,8 @@ from config import Config # Import the Config class from your file
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATUS_FILE = os.path.join(BASE_DIR, "data", "bot_status.json")
+GUILDS_CACHE_FILE = os.path.join(BASE_DIR, "data", "guilds_cache.json")
+GUILDS_CACHE_TTL_SECONDS = 45
 
 DEFAULT_STATUS = {
     "online": False,
@@ -136,6 +138,51 @@ def create_app():
         os.makedirs(os.path.dirname(STATUS_FILE), exist_ok=True)
         with open(STATUS_FILE, "w") as f:
             json.dump(data, f)
+
+    # ------------------------------------------------------------------
+    # Guild list cache (file-backed so it works across multiple
+    # gunicorn/Render workers, same pattern as read_status/write_status).
+    # Discord's /users/@me/guilds endpoint is tightly rate limited, so we
+    # avoid re-fetching it on every dashboard click.
+    # ------------------------------------------------------------------
+    def _read_guilds_cache():
+        if not os.path.exists(GUILDS_CACHE_FILE):
+            return {}
+        try:
+            with open(GUILDS_CACHE_FILE, "r") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, OSError):
+            return {}
+
+    def _write_guilds_cache(cache):
+        os.makedirs(os.path.dirname(GUILDS_CACHE_FILE), exist_ok=True)
+        tmp_path = GUILDS_CACHE_FILE + ".tmp"
+        with open(tmp_path, "w") as f:
+            json.dump(cache, f)
+        os.replace(tmp_path, GUILDS_CACHE_FILE)
+
+    def fetch_discord_guilds_cached(user, access_token, force_refresh=False):
+        """
+        Returns the user's Discord guild list, using a short-lived
+        file cache to avoid hammering Discord's tightly-limited
+        /users/@me/guilds endpoint when a user clicks around the
+        dashboard quickly.
+        """
+        cache = _read_guilds_cache()
+        entry = cache.get(str(user.discord_id))
+
+        if not force_refresh and entry:
+            age = datetime.utcnow().timestamp() - entry.get("ts", 0)
+            if age < GUILDS_CACHE_TTL_SECONDS:
+                return entry["guilds"]
+
+        guilds = fetch_discord_guilds(access_token)
+        cache[str(user.discord_id)] = {
+            "ts": datetime.utcnow().timestamp(),
+            "guilds": guilds,
+        }
+        _write_guilds_cache(cache)
+        return guilds
 
     def exchange_code_for_token(code):
         data = {
@@ -421,13 +468,23 @@ def create_app():
             return redirect(url_for("login"))
 
         try:
-            user_guilds = fetch_discord_guilds(access_token)
-        except requests.RequestException:
+            user_guilds = fetch_discord_guilds_cached(g.user, access_token)
+        except requests.RequestException as e:
             user_guilds = []
-            flash(
-                "Couldn't reach Discord to load your servers. "
-                "Please try again in a moment."
-            )
+            status_code = getattr(e.response, "status_code", None)
+            if status_code == 429:
+                retry_after = None
+                if e.response is not None:
+                    retry_after = e.response.headers.get("Retry-After")
+                flash(
+                    "Discord is rate-limiting us right now"
+                    + (f" — try again in {retry_after}s." if retry_after else ". Please try again shortly.")
+                )
+            else:
+                flash(
+                    "Couldn't reach Discord to load your servers. "
+                    "Please try again in a moment."
+                )
 
         bot_guild_ids = {str(gd.get("id")) for gd in read_status().get("guilds", [])}
 
@@ -458,11 +515,25 @@ def create_app():
             return redirect(url_for("login"))
 
         try:
-            user_guilds = fetch_discord_guilds(access_token)
+            # POSTs (saving settings) force a fresh fetch so a permission
+            # change takes effect immediately; plain page views use the
+            # short-lived cache to avoid hammering Discord's rate limit.
+            user_guilds = fetch_discord_guilds_cached(
+                g.user, access_token, force_refresh=(request.method == "POST")
+            )
         except requests.RequestException as e:
             app.logger.error(f"fetch_discord_guilds failed: {e}")
             status_code = getattr(e.response, "status_code", None)
-            flash(f"Couldn't reach Discord to verify your permissions. ({status_code or 'no response'})")
+            if status_code == 429:
+                retry_after = None
+                if e.response is not None:
+                    retry_after = e.response.headers.get("Retry-After")
+                flash(
+                    "Discord is rate-limiting us right now"
+                    + (f" — try again in {retry_after}s." if retry_after else ". Please try again shortly.")
+                )
+            else:
+                flash(f"Couldn't reach Discord to verify your permissions. ({status_code or 'no response'})")
             return redirect(url_for("dashboard"))
         
         
