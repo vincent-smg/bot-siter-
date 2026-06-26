@@ -33,11 +33,7 @@ from data.updates import UPDATES
 from models import GuildSettings, User, db
 from config import Config # Import the Config class from your file
 
-app = Flask(__name__)
-app.config.from_object(Config) # Load all settings from the Config class
 
-# Now apply the middleware
-app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATUS_FILE = os.path.join(BASE_DIR, "data", "bot_status.json")
@@ -463,10 +459,13 @@ def create_app():
 
         try:
             user_guilds = fetch_discord_guilds(access_token)
-        except requests.RequestException:
-            flash("Couldn't reach Discord to verify your permissions.")
+        except requests.RequestException as e:
+            app.logger.error(f"fetch_discord_guilds failed: {e}")
+            status_code = getattr(e.response, "status_code", None)
+            flash(f"Couldn't reach Discord to verify your permissions. ({status_code or 'no response'})")
             return redirect(url_for("dashboard"))
-
+        
+        
         guild_info = next(
             (gd for gd in user_guilds if str(gd.get("id")) == str(guild_id)), None
         )
