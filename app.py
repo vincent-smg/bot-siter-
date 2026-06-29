@@ -466,6 +466,13 @@ def create_app():
         if tier_id not in TIER_PRICES:
             abort(404)
 
+        existing_active = PremiumSubscription.query.filter_by(
+            discord_id=g.user.discord_id, status="active"
+        ).first()
+        if existing_active and existing_active.is_active():
+            flash("You already have an active Premium subscription — no need to buy it again.")
+            return redirect(url_for("premium_page"))
+
         subscription = PremiumSubscription(
             discord_id=g.user.discord_id,
             tier_id=tier_id,

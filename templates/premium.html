@@ -79,9 +79,13 @@
               <li>{{ feature }}</li>
             {% endfor %}
           </ul>
-          <a class="btn {{ 'btn--gold' if tier.featured else 'btn--outline' }}" style="width: 100%;" href="{{ url_for('premium_checkout', tier_id=tier.id) }}">
-            Get {{ tier.name }}
-          </a>
+          {% if active_subscription %}
+            <button class="btn btn--outline" style="width: 100%;" disabled>Already active</button>
+          {% else %}
+            <a class="btn {{ 'btn--gold' if tier.featured else 'btn--outline' }}" style="width: 100%;" href="{{ url_for('premium_checkout', tier_id=tier.id) }}">
+              Get {{ tier.name }}
+            </a>
+          {% endif %}
         </div>
       {% endfor %}
     </div>
