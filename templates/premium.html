@@ -18,11 +18,21 @@
   <div class="container">
     <h1>Anko <span class="accent">Premium</span></h1>
     <p>Unlock extra rank card customization, shop exclusives, and a few quality-of-life perks - while helping keep Anko Uguisu online 24/7.</p>
+
+    {% if active_subscription %}
+      <div class="flash" style="max-width: 480px; margin: 20px auto 0;">
+        ✅ You have <strong>{{ active_subscription.tier_id|replace('_', ' ')|title }}</strong> active until
+        {{ active_subscription.expires_at.strftime('%B %d, %Y') if active_subscription.expires_at else 'further notice' }}.
+      </div>
+    {% endif %}
+
     <div class="hero__actions" style="justify-content: center; margin-top: 28px;">
-      <a class="btn btn--gold btn--lg" href="{{ premium_url }}" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 16L3 5l5.5 4L12 3l3.5 6L21 5l-2 11H5zm0 2h14v2H5v-2z"/></svg>
-        Get Premium
-      </a>
+      {% if not active_subscription %}
+        <a class="btn btn--gold btn--lg" href="{{ url_for('premium_checkout', tier_id=tiers[0].id) }}">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 16L3 5l5.5 4L12 3l3.5 6L21 5l-2 11H5zm0 2h14v2H5v-2z"/></svg>
+          Get Premium
+        </a>
+      {% endif %}
       <a class="btn btn--outline btn--lg" href="{{ url_for('commands_page') }}">See all commands</a>
     </div>
   </div>
@@ -69,7 +79,7 @@
               <li>{{ feature }}</li>
             {% endfor %}
           </ul>
-          <a class="btn {{ 'btn--gold' if tier.featured else 'btn--outline' }}" style="width: 100%;" href="{{ premium_url }}" target="_blank" rel="noopener">
+          <a class="btn {{ 'btn--gold' if tier.featured else 'btn--outline' }}" style="width: 100%;" href="{{ url_for('premium_checkout', tier_id=tier.id) }}">
             Get {{ tier.name }}
           </a>
         </div>

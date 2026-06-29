@@ -30,7 +30,8 @@ from data.commands import COMMAND_CATEGORIES, PREFIX
 from data.dashboard_settings import DASHBOARD_SECTIONS
 from data.premium import PREMIUM_PERKS, PREMIUM_TIERS
 from data.updates import UPDATES
-from models import GuildSettings, User, db
+from models import GuildSettings, User, PremiumSubscription, db
+from payments import get_payment_provider
 from config import Config # Import the Config class from your file
 
 
@@ -429,11 +430,108 @@ def create_app():
 
     @app.route("/premium")
     def premium_page():
+        active_subscription = None
+        if g.user:
+            active_subscription = (
+                PremiumSubscription.query.filter_by(discord_id=g.user.discord_id, status="active")
+                .order_by(PremiumSubscription.created_at.desc())
+                .first()
+            )
+            if active_subscription and not active_subscription.is_active():
+                active_subscription = None
+
         return render_template(
             "premium.html",
             perks=PREMIUM_PERKS,
             tiers=PREMIUM_TIERS,
+            active_subscription=active_subscription,
         )
+
+    # ------------------------------------------------------------------
+    # Premium checkout (mock payment provider for now; same routes will
+    # work once a real TBC/BOG provider is swapped in via payments.py)
+    # ------------------------------------------------------------------
+    TIER_PRICES = {
+        "premium": 0.99,
+        "premium_plus": 2.99,
+    }
+
+    @app.route("/premium/checkout/<tier_id>")
+    @limiter.limit("20 per minute")
+    def premium_checkout(tier_id):
+        if not g.user:
+            flash("Please sign in with Discord first so we know who to give Premium to.")
+            return redirect(url_for("login"))
+
+        if tier_id not in TIER_PRICES:
+            abort(404)
+
+        subscription = PremiumSubscription(
+            discord_id=g.user.discord_id,
+            tier_id=tier_id,
+            status="pending",
+            provider="mock",
+        )
+        db.session.add(subscription)
+        db.session.commit()
+
+        provider = get_payment_provider()
+        payment = provider.create_payment(
+            subscription_id=subscription.id,
+            amount=TIER_PRICES[tier_id],
+            currency="USD",
+            description=f"Anko Uguisu {tier_id}",
+        )
+        return redirect(payment["redirect_url"])
+
+    @app.route("/premium/mock-pay/<int:subscription_id>", methods=["GET"])
+    def premium_mock_pay(subscription_id):
+        if not g.user:
+            return redirect(url_for("login"))
+
+        subscription = PremiumSubscription.query.get_or_404(subscription_id)
+        if subscription.discord_id != g.user.discord_id:
+            abort(403)
+        if subscription.status != "pending":
+            flash("This payment has already been processed.")
+            return redirect(url_for("premium_page"))
+
+        tier = next((t for t in PREMIUM_TIERS if t["id"] == subscription.tier_id), None)
+        return render_template(
+            "premium_mock_pay.html",
+            subscription=subscription,
+            tier=tier,
+            amount=TIER_PRICES.get(subscription.tier_id),
+        )
+
+    @app.route("/premium/mock-pay/<int:subscription_id>/confirm", methods=["POST"])
+    @limiter.limit("20 per minute")
+    def premium_mock_pay_confirm(subscription_id):
+        """
+        Stands in for a real bank webhook. In the mock provider, the user
+        clicking 'Confirm Payment' calls this directly. Once TBC/BOG is
+        wired up, this same activation logic will instead run inside a
+        webhook route that TBC calls on their servers after a real card
+        payment succeeds - the user never sees this route at that point.
+        """
+        if not g.user:
+            return redirect(url_for("login"))
+
+        subscription = PremiumSubscription.query.get_or_404(subscription_id)
+        if subscription.discord_id != g.user.discord_id:
+            abort(403)
+        if subscription.status != "pending":
+            flash("This payment has already been processed.")
+            return redirect(url_for("premium_page"))
+
+        subscription.status = "active"
+        subscription.activated_at = datetime.utcnow()
+        subscription.expires_at = datetime.utcnow() + timedelta(days=30)
+        subscription.external_payment_id = f"mock-{secrets.token_hex(8)}"
+        db.session.commit()
+
+        flash("✅ Premium activated! Your bot should pick this up automatically within ~30 seconds.")
+        return redirect(url_for("premium_page"))
 
     @app.route("/status")
     def status_page():
@@ -634,6 +732,40 @@ def create_app():
         status["last_updated"] = datetime.utcnow().isoformat()
         write_status(status)
         return jsonify({"ok": True})
+
+    # ------------------------------------------------------------------
+    # Premium sync API
+    # The bot polls this every 30s (see leveling.py's _auto_sync_premium)
+    # to find out who currently has an active premium subscription, and
+    # mirrors the result into its own premium_users set - this is what
+    # makes a website purchase turn into premium in Discord automatically.
+    # ------------------------------------------------------------------
+    @app.route("/api/premium-sync", methods=["GET"])
+    @limiter.limit("60 per minute")
+    def api_premium_sync():
+        key = request.headers.get("X-Status-Key")
+        if key != app.config["STATUS_API_KEY"]:
+            abort(401)
+
+        now = datetime.utcnow()
+
+        # Anyone whose subscription says "active" but has actually passed
+        # its expiry gets flipped to "expired" here, so the dashboard and
+        # this endpoint always agree on who's really still premium.
+        expired = PremiumSubscription.query.filter(
+            PremiumSubscription.status == "active",
+            PremiumSubscription.expires_at.isnot(None),
+            PremiumSubscription.expires_at <= now,
+        ).all()
+        for sub in expired:
+            sub.status = "expired"
+        if expired:
+            db.session.commit()
+
+        active_subs = PremiumSubscription.query.filter_by(status="active").all()
+        premium_discord_ids = sorted(set(sub.discord_id for sub in active_subs))
+
+        return jsonify({"premium_discord_ids": premium_discord_ids})
 
     # ------------------------------------------------------------------
     # Guild config API

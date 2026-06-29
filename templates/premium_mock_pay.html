@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Complete your purchase — Anko Uguisu{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width: 480px;">
+    <div class="pricing-card is-featured" style="text-align: center;">
+      <span class="pricing-card__badge">Test payment</span>
+      <h3>{{ tier.name if tier else "Premium" }}</h3>
+      <p class="pricing-card__tagline">
+        This is a placeholder checkout page. Real card payment via TBC/BOG
+        will replace this once merchant access is approved — nothing else
+        about the flow changes.
+      </p>
+      <div class="pricing-card__price">
+        <span class="amount">${{ "%.2f"|format(amount) if amount else "0.00" }}</span>
+        <span class="period">/ month</span>
+      </div>
+
+      <form method="POST" action="{{ url_for('premium_mock_pay_confirm', subscription_id=subscription.id) }}">
+        <button type="submit" class="btn btn--gold btn--lg" style="width: 100%; margin-top: 16px;">
+          Simulate Successful Payment
+        </button>
+      </form>
+      <a class="btn btn--outline" style="width: 100%; margin-top: 10px;" href="{{ url_for('premium_page') }}">
+        Cancel
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

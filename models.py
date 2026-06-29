@@ -73,3 +73,45 @@ class GuildSettings(db.Model):
 
     def get(self, key, default=None):
         return (self.data or {}).get(key, default)
+
+
+class PremiumSubscription(db.Model):
+    """
+    A premium purchase made on the website, tied to a Discord account.
+
+    This is the single source of truth the bot polls (via GET
+    /api/premium-sync) to know who currently has premium. The flow is:
+
+        1. User clicks "Get Premium" on the website -> a row is created
+           here with status="pending" while they pay.
+        2. Payment succeeds (mock provider for now, real TBC/BOG later)
+           -> status flips to "active" and expires_at is set ~30 days out.
+        3. The bot asks /api/premium-sync every 30s "who's active right
+           now?" and mirrors the answer into its own premium_users set -
+           no manual /setpremium needed anymore.
+        4. When expires_at passes, is_active() naturally returns False,
+           so the user drops out of the next sync automatically.
+    """
+
+    __tablename__ = "premium_subscriptions"
+
+    id = db.Column(db.Integer, primary_key=True)
+    discord_id = db.Column(db.String(32), db.ForeignKey("users.discord_id"), nullable=False, index=True)
+    tier_id = db.Column(db.String(32), nullable=False)  # "premium" or "premium_plus"
+
+    # pending -> active -> (cancelled | expired)
+    status = db.Column(db.String(16), nullable=False, default="pending")
+
+    provider = db.Column(db.String(16), nullable=False, default="mock")  # "mock" or "tbc"
+    external_payment_id = db.Column(db.String(128), nullable=True)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    activated_at = db.Column(db.DateTime, nullable=True)
+    expires_at = db.Column(db.DateTime, nullable=True)
+
+    def is_active(self):
+        if self.status != "active":
+            return False
+        if self.expires_at and datetime.utcnow() >= self.expires_at:
+            return False
+        return True
